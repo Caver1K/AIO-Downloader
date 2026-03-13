@@ -34,7 +34,7 @@ const sources = [
   // USB Loader GX FS47 (Google Drive)
   {
     type: "direct",
-    url: "http://content.caver1k.net/Scott/Aroma-Forwarders/USB-Loader-GX-FS47.zip",
+    url: "https://content.caver1k.net/Scott/Aroma-Forwarders/USB-Loader-GX-FS47.zip",
     filename: "USBLoaderGX_Forwarder_FS47.zip"
   }
 ];
