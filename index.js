@@ -156,7 +156,7 @@ async function buildBundle() {
   // Free blob URL
   URL.revokeObjectURL(url);
 
-  log("Bundle ready.");
+  log("ZIP file ready.");
 }
 
 // ---------------------------
