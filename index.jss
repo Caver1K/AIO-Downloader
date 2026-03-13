@@ -3,30 +3,35 @@
 // ---------------------------
 
 const sources = [
-  // GitHub: vWii Compat Installer
+  // USB Loader GX (OSCWii)
   {
-    type: "github",
-    owner: "Xpl0itU",
-    repo: "vwii-compat-installer",
-    assetPattern: /\.zip$/
+    type: "direct",
+    url: "https://hbb1.oscwii.org/api/contents/usbloader_gx/usbloader_gx.zip",
+    filename: "usbloader_gx.zip"
   },
 
-  // GitHub: YAWM ModMii Edition
+  // YAWM ModMii Edition (OSCWii)
   {
-    type: "github",
-    owner: "modmii",
-    repo: "YAWM-ModMii-Edition",
-    assetPattern: /\.zip$/
+    type: "direct",
+    url: "https://hbb1.oscwii.org/api/contents/yawmme/yawmme.zip",
+    filename: "yawmme.zip"
   },
 
-  // Direct ZIP: Nintendont
+  // Compat Title Installer (FortheUsers CDN)
+  {
+    type: "direct",
+    url: "https://wiiu.cdn.fortheusers.org/zips/CompatTitleInstaller.zip",
+    filename: "CompatTitleInstaller.zip"
+  },
+
+  // Nintendont (OSCWii)
   {
     type: "direct",
     url: "https://hbb1.oscwii.org/api/contents/Nintendont/Nintendont.zip",
     filename: "Nintendont.zip"
   },
 
-  // Direct ZIP: USB Loader GX FS47 (Google Drive)
+  // USB Loader GX FS47 (Google Drive)
   {
     type: "direct",
     url: "https://drive.usercontent.google.com/download?id=1wuHEFIQDIRusr7eG8w1pUnKYYyg4zAnq&export=download",
@@ -40,29 +45,6 @@ const sources = [
 function log(msg) {
   const box = document.getElementById("log");
   box.textContent += msg + "\n";
-}
-
-// ---------------------------
-// GITHUB HELPERS
-// ---------------------------
-async function getLatestRelease(owner, repo) {
-  const url = `https://api.github.com/repos/${owner}/${repo}/releases/latest`;
-
-  const res = await fetch(url, {
-    headers: { "Accept": "application/vnd.github+json" }
-  });
-
-  if (!res.ok) {
-    throw new Error(`Failed to fetch latest release for ${owner}/${repo}: ${res.status}`);
-  }
-
-  return res.json();
-}
-
-async function downloadAsset(asset) {
-  const res = await fetch(asset.browser_download_url);
-  if (!res.ok) throw new Error(`Failed to download ${asset.name}: ${res.status}`);
-  return res.arrayBuffer();
 }
 
 // ---------------------------
@@ -81,28 +63,9 @@ async function buildBundle() {
   const zip = new JSZip();
 
   for (const src of sources) {
-    if (src.type === "github") {
-      log(`Fetching latest release for ${src.owner}/${src.repo}...`);
-      const release = await getLatestRelease(src.owner, src.repo);
-
-      const asset = release.assets.find(a => src.assetPattern.test(a.name));
-      if (!asset) {
-        log(`No ZIP found for ${src.owner}/${src.repo}`);
-        continue;
-      }
-
-      log(`Downloading ${asset.name}...`);
-      const data = await downloadAsset(asset);
-
-      zip.file(`${src.owner}-${src.repo}-${asset.name}`, data);
-    }
-
-    else if (src.type === "direct") {
-      log(`Downloading ${src.filename}...`);
-      const data = await downloadDirect(src.url);
-
-      zip.file(src.filename, data);
-    }
+    log(`Downloading ${src.filename}...`);
+    const data = await downloadDirect(src.url);
+    zip.file(src.filename, data);
   }
 
   log("Generating final ZIP...");
