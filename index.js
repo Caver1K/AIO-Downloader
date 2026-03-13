@@ -31,7 +31,7 @@ const sources = [
     filename: "Nintendont.zip"
   },
 
-  // USB Loader GX FS47 (Google Drive)
+  // USB Loader GX FS47 (Custom host)
   {
     type: "direct",
     url: "https://content.caver1k.net/Scott/Aroma-Forwarders/ulgx_fs47.zip",
@@ -60,16 +60,23 @@ async function downloadDirect(url) {
 // MAIN ZIP BUILDER
 // ---------------------------
 async function buildBundle() {
-  const zip = new JSZip();
+  let zip = new JSZip();
 
   for (const src of sources) {
     log(`Downloading ${src.filename}...`);
-    const data = await downloadDirect(src.url);
+    let data = await downloadDirect(src.url);
+
     zip.file(src.filename, data);
+
+    // Free memory for this file
+    data = null;
   }
 
   log("Generating final ZIP...");
   const blob = await zip.generateAsync({ type: "blob" });
+
+  // Free JSZip object
+  zip = null;
 
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -78,6 +85,8 @@ async function buildBundle() {
   document.body.appendChild(a);
   a.click();
   a.remove();
+
+  // Free blob URL
   URL.revokeObjectURL(url);
 
   log("Bundle ready.");
