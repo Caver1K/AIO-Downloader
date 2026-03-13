@@ -53,7 +53,7 @@ async function getLatestRelease(owner, repo) {
   });
 
   if (!res.ok) {
-    throw new Error(`Failed to fetch latest release for ${owner}/${repo}`);
+    throw new Error(`Failed to fetch latest release for ${owner}/${repo}: ${res.status}`);
   }
 
   return res.json();
@@ -61,7 +61,7 @@ async function getLatestRelease(owner, repo) {
 
 async function downloadAsset(asset) {
   const res = await fetch(asset.browser_download_url);
-  if (!res.ok) throw new Error(`Failed to download ${asset.name}`);
+  if (!res.ok) throw new Error(`Failed to download ${asset.name}: ${res.status}`);
   return res.arrayBuffer();
 }
 
@@ -70,7 +70,7 @@ async function downloadAsset(asset) {
 // ---------------------------
 async function downloadDirect(url) {
   const res = await fetch(url);
-  if (!res.ok) throw new Error(`Failed to download direct file: ${url}`);
+  if (!res.ok) throw new Error(`Failed to download direct file: ${url} (${res.status})`);
   return res.arrayBuffer();
 }
 
