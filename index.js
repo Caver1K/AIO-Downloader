@@ -1,22 +1,41 @@
 // ---------------------------
-// CONFIGURE YOUR REPOS HERE
+// CONFIG: SOURCES TO DOWNLOAD
 // ---------------------------
-const targets = [
+
+const sources = [
+  // GitHub: vWii Compat Installer
   {
-    owner: "OWNER1",
-    repo: "REPO1",
-    assetPattern: /\.zip$/ // download any .zip asset
+    type: "github",
+    owner: "Xpl0itU",
+    repo: "vwii-compat-installer",
+    assetPattern: /\.zip$/
   },
+
+  // GitHub: YAWM ModMii Edition
   {
-    owner: "OWNER2",
-    repo: "REPO2",
-    assetPattern: /\.zip$/ // adjust as needed
+    type: "github",
+    owner: "modmii",
+    repo: "YAWM-ModMii-Edition",
+    assetPattern: /\.zip$/
+  },
+
+  // Direct ZIP: Nintendont
+  {
+    type: "direct",
+    url: "https://hbb1.oscwii.org/api/contents/Nintendont/Nintendont.zip",
+    filename: "Nintendont.zip"
+  },
+
+  // Direct ZIP: USB Loader GX FS47 (Google Drive)
+  {
+    type: "direct",
+    url: "https://drive.usercontent.google.com/download?id=1wuHEFIQDIRusr7eG8w1pUnKYYyg4zAnq&export=download",
+    filename: "USBLoaderGX_FS47.zip"
   }
-  // Add more repos as needed
 ];
 
 // ---------------------------
-// LOGGING HELPER
+// LOGGING
 // ---------------------------
 function log(msg) {
   const box = document.getElementById("log");
@@ -24,19 +43,17 @@ function log(msg) {
 }
 
 // ---------------------------
-// GITHUB API HELPERS
+// GITHUB HELPERS
 // ---------------------------
 async function getLatestRelease(owner, repo) {
   const url = `https://api.github.com/repos/${owner}/${repo}/releases/latest`;
 
   const res = await fetch(url, {
-    headers: {
-      "Accept": "application/vnd.github+json"
-    }
+    headers: { "Accept": "application/vnd.github+json" }
   });
 
   if (!res.ok) {
-    throw new Error(`Failed to fetch latest release for ${owner}/${repo}: ${res.status}`);
+    throw new Error(`Failed to fetch latest release for ${owner}/${repo}`);
   }
 
   return res.json();
@@ -44,56 +61,63 @@ async function getLatestRelease(owner, repo) {
 
 async function downloadAsset(asset) {
   const res = await fetch(asset.browser_download_url);
+  if (!res.ok) throw new Error(`Failed to download ${asset.name}`);
+  return res.arrayBuffer();
+}
 
-  if (!res.ok) {
-    throw new Error(`Failed to download asset ${asset.name}: ${res.status}`);
-  }
-
+// ---------------------------
+// DIRECT DOWNLOAD
+// ---------------------------
+async function downloadDirect(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Failed to download direct file: ${url}`);
   return res.arrayBuffer();
 }
 
 // ---------------------------
 // MAIN ZIP BUILDER
 // ---------------------------
-async function buildCombinedZip() {
+async function buildBundle() {
   const zip = new JSZip();
 
-  for (const target of targets) {
-    const { owner, repo, assetPattern } = target;
+  for (const src of sources) {
+    if (src.type === "github") {
+      log(`Fetching latest release for ${src.owner}/${src.repo}...`);
+      const release = await getLatestRelease(src.owner, src.repo);
 
-    log(`Fetching latest release for ${owner}/${repo}...`);
-    const release = await getLatestRelease(owner, repo);
+      const asset = release.assets.find(a => src.assetPattern.test(a.name));
+      if (!asset) {
+        log(`No ZIP found for ${src.owner}/${src.repo}`);
+        continue;
+      }
 
-    const matchingAssets = release.assets.filter(a => assetPattern.test(a.name));
-
-    if (matchingAssets.length === 0) {
-      log(`⚠️ No matching assets found for ${owner}/${repo}`);
-      continue;
-    }
-
-    for (const asset of matchingAssets) {
-      log(`Downloading asset: ${asset.name}`);
+      log(`Downloading ${asset.name}...`);
       const data = await downloadAsset(asset);
 
-      // Store the original ZIP inside the combined ZIP
-      const filename = `${owner}-${repo}-${asset.name}`;
-      zip.file(filename, data);
+      zip.file(`${src.owner}-${src.repo}-${asset.name}`, data);
+    }
+
+    else if (src.type === "direct") {
+      log(`Downloading ${src.filename}...`);
+      const data = await downloadDirect(src.url);
+
+      zip.file(src.filename, data);
     }
   }
 
-  log("Generating combined ZIP...");
+  log("Generating final ZIP...");
   const blob = await zip.generateAsync({ type: "blob" });
 
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = "combined-latest-releases.zip";
+  a.download = "Wii-Modding-Bundle.zip";
   document.body.appendChild(a);
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
 
-  log("✅ Download ready!");
+  log("Bundle ready.");
 }
 
 // ---------------------------
@@ -101,8 +125,8 @@ async function buildCombinedZip() {
 // ---------------------------
 document.getElementById("download-btn").addEventListener("click", () => {
   document.getElementById("log").textContent = "";
-  buildCombinedZip().catch(err => {
-    log("❌ ERROR: " + err.message);
+  buildBundle().catch(err => {
+    log("ERROR: " + err.message);
     console.error(err);
   });
 });
