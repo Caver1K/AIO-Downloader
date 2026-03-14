@@ -2,7 +2,7 @@ async function loadFolders() {
   const container = document.getElementById("folder-list");
 
   try {
-    const res = await fetch("./folders.json");
+    const res = await fetch("./aio-list.json");
     const folders = await res.json();
 
     container.innerHTML = "";
