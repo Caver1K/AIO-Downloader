@@ -3,10 +3,14 @@
 // ---------------------------
 let sources = [];
 
-fetch("./sources.json")
-  .then(res => res.json())
-  .then(json => sources = json)
-  .catch(err => console.error("Failed to load sources.json:", err));
+async function loadSources() {
+  try {
+    const res = await fetch("./sources.json");
+    sources = await res.json();
+  } catch (err) {
+    console.error("Failed to load sources.json:", err);
+  }
+}
 
 // ---------------------------
 // LOGGING
@@ -29,13 +33,9 @@ async function downloadDirect(url) {
 // MAIN ZIP BUILDER
 // ---------------------------
 async function buildBundle() {
-  let finalZip = new JSZip();
+  await loadSources();
 
-  // Pre-create folders
-  const appsFolder = finalZip.folder("apps");
-  const wiiuAppsFolder = finalZip.folder("wiiu").folder("apps");
-  const wadsFolder = finalZip.folder("wads");
-  const controllersFolder = finalZip.folder("controllers");
+  let finalZip = new JSZip();
 
   for (const src of sources) {
     log(`Downloading ${src.filename}...`);
@@ -46,35 +46,14 @@ async function buildBundle() {
 
     data = null;
 
+    // Extract ALL files exactly as they appear
     for (const [path, file] of Object.entries(zipContent.files)) {
       if (file.dir) continue;
 
       const fileData = await file.async("arraybuffer");
-      const lower = path.toLowerCase();
 
-      // Auto-route based on ZIP internal structure
-      if (lower.startsWith("apps/")) {
-        appsFolder.file(path.replace(/^apps\//i, ""), fileData);
-        continue;
-      }
-
-      if (lower.startsWith("wiiu/apps/")) {
-        wiiuAppsFolder.file(path.replace(/^wiiu\/apps\//i, ""), fileData);
-        continue;
-      }
-
-      if (lower.startsWith("wads/")) {
-        wadsFolder.file(path.replace(/^wads\//i, ""), fileData);
-        continue;
-      }
-
-      if (lower.startsWith("controllers/")) {
-        controllersFolder.file(path.replace(/^controllers\//i, ""), fileData);
-        continue;
-      }
-
-      // Default: place file in root of final ZIP
-      finalZip.file(path.split("/").pop(), fileData);
+      // Write file with original path
+      finalZip.file(path, fileData);
     }
 
     zipContent = null;
