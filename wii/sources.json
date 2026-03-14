@@ -11,8 +11,8 @@
   },
   {
     "type": "direct",
-    "url": "https://wiiu.cdn.fortheusers.org/zips/CompatTitleInstaller.zip",
-    "filename": "vWii Compat Installer"
+    "url": "https://hbb1.oscwii.org/api/contents/homebrew_browser/homebrew_browser.zip",
+    "filename": "Homebrew Browser"
   },
   {
     "type": "direct",
@@ -21,13 +21,13 @@
   },
   {
     "type": "direct",
-    "url": "https://content.caver1k.net/Scott/Aroma-Forwarders/ulgx_fs47.zip",
-    "filename": "USB Loader GX Forwarder vWii"
+    "url": "https://github.com/wiidev/usbloadergx/raw/updates/USBLoaderGX_forwarder%5BUNEO%5D_Wii.wad",
+    "filename": "USB Loader GX Forwarder"
   },
   {
     "type": "direct",
-    "url": "https://content.caver1k.net/Scott/cIOS/vwii.zip",
-    "filename": "d2x cIOS v11 beta3 vWii wads"
+    "url": "https://content.caver1k.net/Scott/cIOS/wii.zip",
+    "filename": "d2x cIOS v11 beta3 wads"
   },
   {
     "type": "direct",
