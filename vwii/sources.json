@@ -28,5 +28,15 @@
     "type": "direct",
     "url": "https://content.caver1k.net/Scott/cIOS/vwii.zip",
     "filename": "d2x-cIOS-v11-beta3-wads.zip"
+  },
+  {
+    "type": "direct",
+    "url": "https://hbb1.oscwii.org/api/contents/priiloader/priiloader.zip",
+    "filename": "Priiloader Installer"
+  },
+  {
+    "type": "direct",
+    "url": "https://hbb1.oscwii.org/api/contents/LoadPriiloader/LoadPriiloader.zip",
+    "filename": "Load Priiloader"
   }
 ]
