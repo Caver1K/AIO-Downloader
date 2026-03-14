@@ -46,20 +46,25 @@ async function buildBundle() {
     log(`Downloading ${src.filename}...`);
     let data = await downloadDirect(src.url);
 
-    log(`Extracting ${src.filename}...`);
     let zipContent = await JSZip.loadAsync(data);
 
     data = null;
 
-    // Extract ALL files exactly as they appear
-    for (const [path, file] of Object.entries(zipContent.files)) {
-      if (file.dir) continue;
-
-      const fileData = await file.async("arraybuffer");
-
-      // Preserve original folder structure
-      finalZip.file(path, fileData);
+  // Extract ALL files exactly as they appear
+  for (const [path, file] of Object.entries(zipContent.files)) {
+    if (file.dir) continue;
+  
+    // Skip the Homebrew Browser Guide folder
+    if (path.startsWith("Homebrew Browser Guide and Help/")) {
+      continue;
     }
+
+  const fileData = await file.async("arraybuffer");
+
+  // Preserve original folder structure
+  finalZip.file(path, fileData);
+  }
+
 
     zipContent = null;
   }
