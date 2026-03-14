@@ -118,7 +118,7 @@ document.getElementById("download-btn").addEventListener("click", () => {
     log("ERROR: " + err.message);
     console.error(err);
   });
-  document.getElementById("back-btn").addEventListener("click", () => {
-   window.location.href = "/";
+document.getElementById("back-btn").addEventListener("click", () => {
+window.location.href = "/";
 });
 });
