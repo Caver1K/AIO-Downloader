@@ -2,13 +2,19 @@ async function loadFolders() {
   const container = document.getElementById("folder-list");
 
   try {
-    // GitHub API endpoint for listing repo contents
-    const res = await fetch("https://api.github.com/repos/Caver1K/content.caver1k.net/contents/");
+    const res = await fetch(
+      "https://api.github.com/repos/Caver1K/content.caver1k.net/contents/",
+      {
+        headers: {
+          "Accept": "application/vnd.github.v3+json"
+        }
+      }
+    );
+
     const items = await res.json();
 
     container.innerHTML = "";
 
-    // Filter only folders
     const folders = items.filter(item => item.type === "dir");
 
     folders.forEach(folder => {
