@@ -1,14 +1,13 @@
 // ---------------------------
 // LOAD SOURCES FROM JSON
 // ---------------------------
-let sources = [];
-
 async function loadSources() {
   try {
     const res = await fetch("./sources.json");
-    sources = await res.json();
+    return await res.json();
   } catch (err) {
     console.error("Failed to load sources.json:", err);
+    return [];
   }
 }
 
