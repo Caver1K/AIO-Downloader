@@ -46,7 +46,6 @@ async function buildBundle() {
     log(`Downloading ${src.filename}...`);
     let data = await downloadDirect(src.url);
 
-    log(`Extracting ${src.filename}...`);
     let zipContent = await JSZip.loadAsync(data);
 
     data = null;
@@ -57,7 +56,6 @@ async function buildBundle() {
   
     // Skip the Homebrew Browser Guide folder
     if (path.startsWith("Homebrew Browser Guide and Help/")) {
-      log(`Skipping unwanted folder: ${path}`);
       continue;
     }
 
