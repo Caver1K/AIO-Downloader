@@ -11,6 +11,11 @@
   },
   {
     "type": "direct",
+    "url": "https://hbb1.oscwii.org/api/contents/homebrew_browser/homebrew_browser.zip",
+    "filename": "Homebrew Browser"
+  },
+  {
+    "type": "direct",
     "url": "https://wiiu.cdn.fortheusers.org/zips/CompatTitleInstaller.zip",
     "filename": "vWii Compat Installer"
   },
