@@ -1,5 +1,5 @@
 // ---------------------------
-// LOAD SOURCES FROM JSON
+// LOAD SOURCES FROM JSONN
 // ---------------------------
 async function loadSources() {
   try {
@@ -32,7 +32,13 @@ async function downloadDirect(url) {
 // MAIN ZIP BUILDER
 // ---------------------------
 async function buildBundle() {
-  await loadSources();
+  // Load sources.json FIRST
+  const sources = await loadSources();
+
+  if (!sources.length) {
+    log("ERROR: No sources loaded. Check sources.json.");
+    return;
+  }
 
   let finalZip = new JSZip();
 
@@ -51,7 +57,7 @@ async function buildBundle() {
 
       const fileData = await file.async("arraybuffer");
 
-      // Write file with original path
+      // Preserve original folder structure
       finalZip.file(path, fileData);
     }
 
