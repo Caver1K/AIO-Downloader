@@ -1,46 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>AIO Downloads</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>vWii Modding ZIP</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #111;
-      color: #eee;
-      margin: 0;
-      padding: 20px;
-    }
-
-    h1 {
+      background: #0d1117;
+      color: #c9d1d9;
       text-align: center;
-      margin-bottom: 30px;
-      font-size: 32px;
-      color: #00c8ff;
+      padding: 40px;
     }
-
-    .folder {
-      padding: 15px 20px;
-      margin: 10px 0;
-      background: #1b1b1b;
-      border-radius: 6px;
+    button {
+      background: #238636;
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      font-size: 18px;
+      border-radius: 8px;
       cursor: pointer;
-      transition: 0.2s;
-      font-size: 20px;
     }
-
-    .folder:hover {
-      background: #272727;
+    button:hover {
+      background: #2ea043;
+    }
+    #log {
+      margin-top: 30px;
+      text-align: left;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      background: #161b22;
+      padding: 20px;
+      border-radius: 8px;
+      font-family: monospace;
+      white-space: pre-wrap;
     }
   </style>
 </head>
 <body>
 
-  <h1>AIO Downloads</h1>
+  <h1>vWii Modding AIO download</h1></h1>
+  <p>Click the button to download all latest tools and download them as one ZIP, just like in FunkyScott47's latest guide.</p>
 
-  <div id="folder-list">Loading...</div>
+  <button id="download-btn"> Download ZIP</button>
+
+  <div id="log"></div>
 
   <script src="index.js"></script>
-
 </body>
 </html>
