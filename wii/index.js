@@ -51,15 +51,22 @@ async function buildBundle() {
 
     data = null;
 
-    // Extract ALL files exactly as they appear
-    for (const [path, file] of Object.entries(zipContent.files)) {
-      if (file.dir) continue;
-
-      const fileData = await file.async("arraybuffer");
-
-      // Preserve original folder structure
-      finalZip.file(path, fileData);
+  // Extract ALL files exactly as they appear
+  for (const [path, file] of Object.entries(zipContent.files)) {
+    if (file.dir) continue;
+  
+    // Skip the Homebrew Browser Guide folder
+    if (path.startsWith("Homebrew Browser Guide and Help/")) {
+      log(`Skipping unwanted folder: ${path}`);
+      continue;
     }
+
+  const fileData = await file.async("arraybuffer");
+
+  // Preserve original folder structure
+  finalZip.file(path, fileData);
+  }
+
 
     zipContent = null;
   }
