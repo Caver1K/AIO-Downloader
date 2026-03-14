@@ -1,0 +1,10 @@
+{
+  "folders": [
+    "Homebrew Browser Guide and Help",
+  ],
+  "files": [
+    "info.json",
+    "LICENSE",
+    "manifest.install"
+  ]
+}
