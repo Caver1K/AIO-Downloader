@@ -2,32 +2,32 @@
   {
     "type": "direct",
     "url": "https://hbb1.oscwii.org/api/contents/usbloader_gx/usbloader_gx.zip",
-    "filename": "usbloader_gx.zip"
+    "filename": "USB Loader GX"
   },
   {
     "type": "direct",
     "url": "https://hbb1.oscwii.org/api/contents/yawmme/yawmme.zip",
-    "filename": "yawmme.zip"
+    "filename": "YAWM ModMii Wad Manager"
   },
   {
     "type": "direct",
     "url": "https://wiiu.cdn.fortheusers.org/zips/CompatTitleInstaller.zip",
-    "filename": "CompatTitleInstaller.zip"
+    "filename": "vWii Compat Installer"
   },
   {
     "type": "direct",
     "url": "https://hbb1.oscwii.org/api/contents/Nintendont/Nintendont.zip",
-    "filename": "Nintendont.zip"
+    "filename": "Nintendont"
   },
   {
     "type": "direct",
     "url": "https://content.caver1k.net/Scott/Aroma-Forwarders/ulgx_fs47.zip",
-    "filename": "USBLoaderGX_Forwarder_FS47.zip"
+    "filename": "USB Loader GX Forwarder vWii"
   },
   {
     "type": "direct",
     "url": "https://content.caver1k.net/Scott/cIOS/vwii.zip",
-    "filename": "d2x-cIOS-v11-beta3-wads.zip"
+    "filename": "d2x cIOS v11 beta3 vWii wads"
   },
   {
     "type": "direct",
