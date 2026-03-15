@@ -1,4 +1,7 @@
 {
+  "folders": [
+    "Homebrew Browser Guide and Help",
+  ],
   "files": [
     "info.json",
     "manifest.install"
