@@ -1,16 +1,16 @@
 [
   {
-    "type": "direct",
+    "type": "proxied",
     "url": "https://aroma.foryour.cafe/api/download?packages=environmentloader,wiiu-nanddumper-payload,fw_img_loader",
     "filename": "Aroma Payloads"
   },
   {
-    "type": "direct",
+    "type": "proxied",
     "url": "https://aroma.foryour.cafe/api/download/base",
     "filename": "Base Aroma"
   },
   {
-    "type": "direct",
+    "type": "proxied",
     "url": "https://aroma.foryour.cafe/api/download?packages=bloopair,inkay,ftpiiu,sdcafiine,screenshotplugin,swipswapme,wiiload",
     "filename": "Aroma Plugins"
   },
