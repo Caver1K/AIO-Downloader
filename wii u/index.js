@@ -70,7 +70,7 @@ async function buildBundle() {
 
   for (const src of sources) {
     log(`Downloading ${src.filename}...`);
-    let data = await downloadDirect(src.url);
+    let data = await downloadDirect(getDownloadUrl(src));
 
     let zipContent = await JSZip.loadAsync(data);
     data = null;
