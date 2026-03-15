@@ -108,7 +108,7 @@ async function buildBundle() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = "Wii-Modding-Bundle.zip";
+  a.download = "Wii-U-Modding-Bundle.zip";
   document.body.appendChild(a);
   a.click();
   a.remove();
