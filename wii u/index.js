@@ -42,15 +42,12 @@ async function downloadDirect(url) {
 }
 
 function getDownloadUrl(source) {
-  const url = source.url;
-
-  // Aroma requires proxy
-  if (url.includes("aroma.foryour.cafe")) {
-  return `https://proxy.caver1k.net/?url=${encodeURIComponent(url)}`;
+  if (source.type === "proxy") {
+    return `https://proxy.caver1k.net/?url=${encodeURIComponent(source.url)}`;
   }
 
-  // Everything else can be fetched directly
-  return url;
+  // Default: direct download
+  return source.url;
 }
 
 // ---------------------------
