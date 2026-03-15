@@ -46,7 +46,7 @@ function getDownloadUrl(source) {
 
   // Aroma requires proxy
   if (url.includes("aroma.foryour.cafe")) {
-    return `https://aio.caver1k.net/proxy?url=${encodeURIComponent(url)}`;
+  return `https://proxy.caver1k.net/?url=${encodeURIComponent(url)}`;
   }
 
   // Everything else can be fetched directly
