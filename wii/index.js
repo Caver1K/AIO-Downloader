@@ -41,6 +41,15 @@ async function downloadDirect(url) {
   return res.arrayBuffer();
 }
 
+function getDownloadUrl(source) {
+  if (source.type === "proxy") {
+    return `https://proxy.caver1k.net/?url=${encodeURIComponent(source.url)}`;
+  }
+
+  // Default: direct download
+  return source.url;
+}
+
 // ---------------------------
 // MAIN ZIP BUILDER
 // ---------------------------
@@ -58,7 +67,7 @@ async function buildBundle() {
 
   for (const src of sources) {
     log(`Downloading ${src.filename}...`);
-    let data = await downloadDirect(src.url);
+    let data = await downloadDirect(getDownloadUrl(src));
 
     let zipContent = await JSZip.loadAsync(data);
     data = null;
