@@ -16,10 +16,10 @@ async function loadSources() {
 // ---------------------------
 async function loadFilters() {
   try {
-    const res = await fetch("./filters.json");
+    const res = await fetch("./filter.json");
     return await res.json();
   } catch (err) {
-    console.error("Failed to load filters.json:", err);
+    console.error("Failed to load filter.json:", err);
     return { folders: [], files: [] };
   }
 }
