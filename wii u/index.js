@@ -41,6 +41,18 @@ async function downloadDirect(url) {
   return res.arrayBuffer();
 }
 
+function getDownloadUrl(source) {
+  const url = source.url;
+
+  // Aroma requires proxy
+  if (url.includes("aroma.foryour.cafe")) {
+    return `https://aio.caver1k.net/proxy?url=${encodeURIComponent(url)}`;
+  }
+
+  // Everything else can be fetched directly
+  return url;
+}
+
 // ---------------------------
 // MAIN ZIP BUILDER
 // ---------------------------
