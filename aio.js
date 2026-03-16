@@ -65,11 +65,10 @@ function getDownloadUrl(source) {
 // MAIN ZIP BUILDER
 // ---------------------------
 async function buildBundle() {
-  // Load sources.json FIRST
-  const sources = await loadSources();
+  const { bundleName, sources } = await loadSources();
   const filters = await loadFilters();
 
-  if (!sources.length) {
+  if (!sources || sources.length === 0) {
     log("ERROR: No sources loaded. Check sources.json.");
     return;
   }
