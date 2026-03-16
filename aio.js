@@ -4,10 +4,21 @@
 async function loadSources() {
   try {
     const res = await fetch("./sources.json");
-    return await res.json();
+    const json = await res.json();
+
+    return {
+      bundleName: json.bundleName,
+      sources: json.sources || []
+    };
+
   } catch (err) {
     console.error("Failed to load sources.json:", err);
-    return [];
+
+    // Only fallback if the file truly failed to load
+    return {
+      bundleName: "Modding-Bundle",
+      sources: []
+    };
   }
 }
 
@@ -108,7 +119,7 @@ async function buildBundle() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = "Wii-U-Modding-Bundle.zip";
+  a.download = `${bundleName}.zip`;
   document.body.appendChild(a);
   a.click();
   a.remove();
