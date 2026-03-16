@@ -1,47 +1,50 @@
-[
-  {
-    "type": "direct",
-    "url": "https://hbb1.oscwii.org/api/contents/usbloader_gx/usbloader_gx.zip",
-    "filename": "USB Loader GX"
-  },
-  {
-    "type": "direct",
-    "url": "https://hbb1.oscwii.org/api/contents/yawmme/yawmme.zip",
-    "filename": "YAWM ModMii Wad Manager"
-  },
-  {
-    "type": "direct",
-    "url": "https://hbb1.oscwii.org/api/contents/homebrew_browser/homebrew_browser.zip",
-    "filename": "Homebrew Browser"
-  },
-  {
-    "type": "direct",
-    "url": "https://wiiu.cdn.fortheusers.org/zips/CompatTitleInstaller.zip",
-    "filename": "vWii Compat Installer"
-  },
-  {
-    "type": "direct",
-    "url": "https://hbb1.oscwii.org/api/contents/Nintendont/Nintendont.zip",
-    "filename": "Nintendont"
-  },
-  {
-    "type": "direct",
-    "url": "https://content.caver1k.net/Scott/forwarders/ulgx_vwii.zip",
-    "filename": "USB Loader GX Forwarder vWii"
-  },
-  {
-    "type": "direct",
-    "url": "https://content.caver1k.net/Scott/cIOS/vwii.zip",
-    "filename": "d2x cIOS v11 beta3 vWii wads"
-  },
-  {
-    "type": "direct",
-    "url": "https://hbb1.oscwii.org/api/contents/priiloader/priiloader.zip",
-    "filename": "Priiloader Installer"
-  },
-  {
-    "type": "direct",
-    "url": "https://hbb1.oscwii.org/api/contents/LoadPriiloader/LoadPriiloader.zip",
-    "filename": "Load Priiloader"
-  }
-]
+{
+  "bundleName": "vWii Modding Bundle",
+  "sources": [
+    {
+      "type": "direct",
+      "url": "https://hbb1.oscwii.org/api/contents/usbloader_gx/usbloader_gx.zip",
+      "filename": "USB Loader GX"
+    },
+    {
+      "type": "direct",
+      "url": "https://hbb1.oscwii.org/api/contents/yawmme/yawmme.zip",
+      "filename": "YAWM ModMii Wad Manager"
+    },
+    {
+      "type": "direct",
+      "url": "https://hbb1.oscwii.org/api/contents/homebrew_browser/homebrew_browser.zip",
+      "filename": "Homebrew Browser"
+    },
+    {
+      "type": "direct",
+      "url": "https://wiiu.cdn.fortheusers.org/zips/CompatTitleInstaller.zip",
+      "filename": "vWii Compat Installer"
+    },
+    {
+      "type": "direct",
+      "url": "https://hbb1.oscwii.org/api/contents/Nintendont/Nintendont.zip",
+      "filename": "Nintendont"
+    },
+    {
+      "type": "direct",
+      "url": "https://content.caver1k.net/Scott/forwarders/ulgx_vwii.zip",
+      "filename": "USB Loader GX Forwarder vWii"
+    },
+    {
+      "type": "direct",
+      "url": "https://content.caver1k.net/Scott/cIOS/vwii.zip",
+      "filename": "d2x cIOS v11 beta3 vWii wads"
+    },
+    {
+      "type": "direct",
+      "url": "https://hbb1.oscwii.org/api/contents/priiloader/priiloader.zip",
+      "filename": "Priiloader Installer"
+    },
+    {
+      "type": "direct",
+      "url": "https://hbb1.oscwii.org/api/contents/LoadPriiloader/LoadPriiloader.zip",
+      "filename": "Load Priiloader"
+    }
+  ]
+}
