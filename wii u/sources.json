@@ -1,32 +1,35 @@
-[
-  {
-    "type": "proxy",
-    "url": "https://aroma.foryour.cafe/api/download?packages=environmentloader,wiiu-nanddumper-payload,fw_img_loader",
-    "filename": "Aroma Payloads"
-  },
-  {
-    "type": "proxy",
-    "url": "https://aroma.foryour.cafe/api/download/base",
-    "filename": "Base Aroma"
-  },
-  {
-    "type": "proxy",
-    "url": "https://aroma.foryour.cafe/api/download?packages=bloopair,inkay,ftpiiu,sdcafiine,screenshotplugin,swipswapme,wiiload",
-    "filename": "Aroma Plugins"
-  },
-  {
-    "type": "direct",
-    "url": "https://content.caver1k.net/Scott/sigpatches.zip",
-    "filename": "Sigpatches"
-  },
-  {
-    "type": "direct",
-    "url": "https://wiiu.cdn.fortheusers.org/zips/appstore.zip",
-    "filename": "HB-Appstore"
-  },
-  {
-    "type": "direct",
-    "url": "https://wiiu.cdn.fortheusers.org/zips/wup_installer_gx2_wuhb.zip",
-    "filename": "WUP Installer GX2"
-  }
-]
+{
+  "bundleName": "Wii U Modding Bundle",
+  "sources": [
+    {
+      "type": "proxy",
+      "url": "https://aroma.foryour.cafe/api/download?packages=environmentloader,wiiu-nanddumper-payload,fw_img_loader",
+      "filename": "Aroma Payloads"
+    },
+    {
+      "type": "proxy",
+      "url": "https://aroma.foryour.cafe/api/download/base",
+      "filename": "Base Aroma"
+    },
+    {
+      "type": "proxy",
+      "url": "https://aroma.foryour.cafe/api/download?packages=bloopair,inkay,ftpiiu,sdcafiine,screenshotplugin,swipswapme,wiiload",
+      "filename": "Aroma Plugins"
+    },
+    {
+      "type": "direct",
+      "url": "https://content.caver1k.net/Scott/sigpatches.zip",
+      "filename": "Sigpatches"
+    },
+    {
+      "type": "direct",
+      "url": "https://wiiu.cdn.fortheusers.org/zips/appstore.zip",
+      "filename": "HB-Appstore"
+    },
+    {
+      "type": "direct",
+      "url": "https://wiiu.cdn.fortheusers.org/zips/wup_installer_gx2_wuhb.zip",
+      "filename": "WUP Installer GX2"
+    }
+  ]
+}
