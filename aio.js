@@ -90,7 +90,6 @@ async function buildBundle() {
       // FILTER: folders (remove entire directories)
       // -----------------------------
       if (filters.folders.some(folder => path.startsWith(folder + "/"))) {
-        log(`Skipping folder: ${path}`);
         continue;
       }
 
