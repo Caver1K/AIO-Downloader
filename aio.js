@@ -97,7 +97,6 @@ async function buildBundle() {
       // FILTER: files (root or anywhere)
       // -----------------------------
       if (filters.files.includes(path)) {
-        log(`Skipping file: ${path}`);
         continue;
       }
 
