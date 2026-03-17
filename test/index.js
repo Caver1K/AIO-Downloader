@@ -4,10 +4,21 @@
 async function loadSources() {
   try {
     const res = await fetch("./sources.json");
-    return await res.json();
+    const json = await res.json();
+
+    return {
+      bundleName: json.bundleName,
+      sources: json.sources || []
+    };
+
   } catch (err) {
     console.error("Failed to load sources.json:", err);
-    return [];
+
+    // Only fallback if the file truly failed to load
+    return {
+      bundleName: "Modding-Bundle",
+      sources: []
+    };
   }
 }
 
@@ -16,10 +27,10 @@ async function loadSources() {
 // ---------------------------
 async function loadFilters() {
   try {
-    const res = await fetch("./filters.json");
+    const res = await fetch("./filter.json");
     return await res.json();
   } catch (err) {
-    console.error("Failed to load filters.json:", err);
+    console.error("Failed to load filter.json:", err);
     return { folders: [], files: [] };
   }
 }
@@ -41,15 +52,23 @@ async function downloadDirect(url) {
   return res.arrayBuffer();
 }
 
+function getDownloadUrl(source) {
+  if (source.type === "proxy") {
+    return `https://proxy.caver1k.net/?url=${encodeURIComponent(source.url)}`;
+  }
+
+  // Default: direct download
+  return source.url;
+}
+
 // ---------------------------
 // MAIN ZIP BUILDER
 // ---------------------------
 async function buildBundle() {
-  // Load sources.json FIRST
-  const sources = await loadSources();
+  const { bundleName, sources } = await loadSources();
   const filters = await loadFilters();
 
-  if (!sources.length) {
+  if (!sources || sources.length === 0) {
     log("ERROR: No sources loaded. Check sources.json.");
     return;
   }
@@ -58,7 +77,7 @@ async function buildBundle() {
 
   for (const src of sources) {
     log(`Downloading ${src.filename}...`);
-    let data = await downloadDirect(src.url);
+    let data = await downloadDirect(getDownloadUrl(src));
 
     let zipContent = await JSZip.loadAsync(data);
     data = null;
@@ -71,7 +90,6 @@ async function buildBundle() {
       // FILTER: folders (remove entire directories)
       // -----------------------------
       if (filters.folders.some(folder => path.startsWith(folder + "/"))) {
-        log(`Skipping folder: ${path}`);
         continue;
       }
 
@@ -79,7 +97,6 @@ async function buildBundle() {
       // FILTER: files (root or anywhere)
       // -----------------------------
       if (filters.files.includes(path)) {
-        log(`Skipping file: ${path}`);
         continue;
       }
 
@@ -99,7 +116,7 @@ async function buildBundle() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = "vWii-Modding-Bundle.zip";
+  a.download = `${bundleName}.zip`;
   document.body.appendChild(a);
   a.click();
   a.remove();
@@ -118,4 +135,7 @@ document.getElementById("download-btn").addEventListener("click", () => {
     log("ERROR: " + err.message);
     console.error(err);
   });
+document.getElementById("back-btn").addEventListener("click", () => {
+window.location.href = "/";
+});
 });
