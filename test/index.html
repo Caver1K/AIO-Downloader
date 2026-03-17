@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Just the test site lmao</title>
+  <title>Wii U Modding AIO</title>
 
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 
@@ -12,9 +12,44 @@
       font-family: Arial, sans-serif;
       background: #0d1117;
       color: #c9d1d9;
-      text-align: center;
       padding: 40px;
+      display: flex;
+      gap: 40px;
     }
+
+    #main {
+      flex: 1;
+      text-align: center;
+    }
+
+    #extras-panel {
+      width: 320px;
+      background: #161b22;
+      padding: 20px;
+      border-radius: 10px;
+      height: fit-content;
+    }
+
+    .extra-item {
+      background: #1f242d;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+
+    .toggle {
+      margin-top: 8px;
+      background: #30363d;
+      padding: 6px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .toggle.active {
+      background: #238636;
+    }
+
     button {
       background: #238636;
       color: white;
@@ -24,9 +59,7 @@
       border-radius: 8px;
       cursor: pointer;
     }
-    button:hover {
-      background: #2ea043;
-    }
+
     #log {
       margin-top: 30px;
       text-align: left;
@@ -39,11 +72,11 @@
       font-family: monospace;
       white-space: pre-wrap;
     }
+
     #back-btn {
       position: absolute;
       top: 20px;
       left: 20px;
-
       background: #1b1b1b;
       color: #eee;
       border: none;
@@ -53,26 +86,40 @@
       cursor: pointer;
       transition: 0.2s;
     }
-    #back-btn:hover {
-      background: #272727;
-    }
   </style>
 </head>
+
 <body>
   <button id="back-btn">← Back</button>
+
   <script>
     document.getElementById("back-btn").addEventListener("click", () => {
-    window.location.href = "/";
-  });
+      window.location.href = "/";
+    });
   </script>
 
-  <h1>Test AIO Download</h1></h1>
-  <p>Click the button to download all latest tools and download them as one ZIP, just like in FunkyScott47's latest guide.</p>
+  <div id="main">
+    <h1>Wii U Modding AIO download</h1>
+    <p>Click the button to download all latest tools and have them as one ZIP.</p>
 
-  <button id="download-btn"> Download ZIP</button>
+    <button id="download-btn">Download ZIP</button>
 
-  <div id="log"></div>
+    <div id="log"></div>
+  </div>
 
-  <script src="index.js"></script>
+  <div id="extras-panel">
+    <h2>Extras</h2>
+
+    <h3>Homebrew</h3>
+    <div id="extras-homebrew"></div>
+
+    <h3>PC Tools</h3>
+    <div id="extras-pc"></div>
+
+    <h3>OS</h3>
+    <div id="os-selector"></div>
+  </div>
+
+  <script src="test.js"></script>
 </body>
 </html>
