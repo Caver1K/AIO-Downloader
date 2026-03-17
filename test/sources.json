@@ -45,34 +45,34 @@
       "type": "direct",
       "url": "https://hbb1.oscwii.org/api/contents/LoadPriiloader/LoadPriiloader.zip",
       "filename": "Load Priiloader"
-    },
-  ]
+    }
+  ],
   "extras": {
     "homebrew": [
-	  {
-      "type": "direct",
-      "filename": "Save Mii WUT Port/Process MOD",
-      "url": "https://wiiu.cdn.fortheusers.org/zips/SaveMiiProcessMod.zip"
-		},
-		{
-      "type": "direct",
-      "filename": "Wii U Account Swap",
-      "url": "https://wiiu.cdn.fortheusers.org/zips/Wii-U-Account-Swap.zip"
-		}
-	]
-  },
+      {
+        "type": "direct",
+        "filename": "Save Mii WUT Port/Process MOD",
+        "url": "https://wiiu.cdn.fortheusers.org/zips/SaveMiiProcessMod.zip"
+      },
+      {
+        "type": "direct",
+        "filename": "Wii U Account Swap",
+        "url": "https://wiiu.cdn.fortheusers.org/zips/Wii-U-Account-Swap.zip"
+      }
+    ],
     "pc": [
-		{
-		"type": "direct",
-		"filename": "Tiny Wii Backup Manager",
-		"windows": "https://twbm.caver1k.net/download/windows/latest",
-		"linux": "https://twbm.caver1k.net/download/linux/latest",
-		"mac": "https://twbm.caver1k.net/download/mac/latest"
-		},
-		{
-		"type": "direct",
-		"filename": "guiformat",
-		"windows": "http://ridgecrop.co.uk/guiformat.exe"
-	  }	
-  ]
+      {
+        "type": "direct",
+        "filename": "Tiny Wii Backup Manager",
+        "windows": "https://twbm.caver1k.net/download/windows/latest",
+        "linux": "https://twbm.caver1k.net/download/linux/latest",
+        "mac": "https://twbm.caver1k.net/download/mac/latest"
+      },
+      {
+        "type": "direct",
+        "filename": "guiformat",
+        "windows": "http://ridgecrop.co.uk/guiformat.exe"
+      }
+    ]
+  }
 }
