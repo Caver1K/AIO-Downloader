@@ -275,13 +275,15 @@ async function buildBundle() {
 }
 
 // ======================================================
-// SEPARATE EXTRAS ZIP BUILDER
+// SEPARATE EXTRAS AIO BUILDER
 // ======================================================
-document.getElementById("separate-download-btn").addEventListener("click", async () => {
+async function buildExtrasBundle() {
   const { extrasName } = await loadSources();
+  const filters = await loadFilters();
 
-  let zip = new JSZip();
+  let extrasZip = new JSZip();
 
+  // Collect all extras marked as "separate"
   for (const [cat, items] of Object.entries(selectedExtras)) {
     if (cat === "os") continue;
 
@@ -292,22 +294,28 @@ document.getElementById("separate-download-btn").addEventListener("click", async
       if (!item) continue;
 
       const url = item[selectedExtras.os] || item.url;
-      log(`Adding separate extra: ${filename}`);
 
+      // Download and merge like main AIO
       const data = await downloadDirect(url);
       const zipContent = await JSZip.loadAsync(data);
 
       for (const [path, file] of Object.entries(zipContent.files)) {
-        if (!file.dir) {
-          const fileData = await file.async("arraybuffer");
-          zip.file(path, fileData);
-        }
+        if (file.dir) continue;
+
+        if (filters.folders.some(folder => path.startsWith(folder + "/"))) continue;
+        if (filters.files.includes(path)) continue;
+
+        const fileData = await file.async("arraybuffer");
+        extrasZip.file(path, fileData);
       }
     }
   }
 
-  log("Generating extras ZIP...");
-  const blob = await zip.generateAsync({ type: "blob" });
+  // If nothing was selected, do nothing
+  const hasFiles = Object.keys(extrasZip.files).length > 0;
+  if (!hasFiles) return;
+
+  const blob = await extrasZip.generateAsync({ type: "blob" });
 
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -317,21 +325,14 @@ document.getElementById("separate-download-btn").addEventListener("click", async
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
-
-  log("Extras ZIP ready.");
-});
-
-// Helper: find extra by filename
-function findExtraByFilename(name) {
-  const hb = SOURCES.extras.homebrew?.find(x => x.filename === name);
-  if (hb) return hb;
-
-  const pc = SOURCES.extras.pc?.find(x => x.filename === name);
-  if (pc) return pc;
-
-  return null;
 }
 
+// Button: "Download extras"
+document.getElementById("separate-download-btn").addEventListener("click", () => {
+  buildExtrasBundle().catch(err => {
+    console.error(err);
+  });
+});
 // ======================================================
 // BUTTON HANDLER
 // ======================================================
