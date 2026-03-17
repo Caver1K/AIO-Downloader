@@ -105,6 +105,13 @@
     .extra-select-btn.active {
       background: #238636;
     }
+    #os-dropdown {
+      background: #1f242d;
+      color: #c9d1d9;
+      border: 1px solid #30363d;
+      padding: 6px 10px;
+      border-radius: 6px;
+    }
   </style>
 </head>
 
@@ -132,11 +139,22 @@
     <h3>Homebrew</h3>
     <div id="extras-homebrew"></div>
 
-    <h3>PC Tools</h3>
-    <div id="extras-pc"></div>
+<div style="display: flex; justify-content: space-between; align-items: center;">
+  <h3>PC Tools</h3>
 
-    <h3>OS</h3>
-    <div id="os-selector"></div>
+  <select id="os-dropdown">
+    <option value="windows">Windows</option>
+    <option value="linux">Linux</option>
+    <option value="mac">Mac</option>
+  </select>
+</div>
+
+<div id="extras-pc"></div>
+
+<!-- Appears only when needed -->
+<button id="separate-download-btn" style="display:none; margin-top:10px;">
+  Download Selected Apps
+</button>
   </div>
 
   <script src="test.js"></script>
