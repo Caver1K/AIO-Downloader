@@ -1,5 +1,6 @@
 {
   "bundleName": "vWii Modding Bundle",
+  "extrasName": "vWii Extras Bundle",
   "sources": [
     {
       "type": "direct",
@@ -46,5 +47,28 @@
       "url": "https://hbb1.oscwii.org/api/contents/LoadPriiloader/LoadPriiloader.zip",
       "filename": "Load Priiloader"
     }
-  ]
+  ],
+  "extras": {
+    "homebrew": [
+      {
+        "type": "direct",
+        "filename": "",
+        "url": ""
+      },
+      {
+        "type": "direct",
+        "filename": "",
+        "url": ""
+      }
+    ],
+    "pc": [
+      {
+        "type": "direct",
+        "filename": "",
+        "windows": "",
+        "linux": "",
+        "mac": ""
+      }
+    ]
+  }
 }
