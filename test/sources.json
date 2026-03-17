@@ -62,7 +62,7 @@
     ],
     "pc": [
       {
-        "type": "direct",
+        "type": "proxy",
         "filename": "Tiny Wii Backup Manager",
         "windows": "https://twbm.caver1k.net/download/windows/latest",
         "linux": "https://twbm.caver1k.net/download/linux/latest",
