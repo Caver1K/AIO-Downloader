@@ -63,9 +63,8 @@ function getDownloadUrl(source) {
 }
 
 // ======================================================
-// EXTRAS SYSTEM
+// GLOBAL STATE
 // ======================================================
-
 let SOURCES = null;
 let selectedExtras = {
   homebrew: {},
@@ -73,7 +72,9 @@ let selectedExtras = {
   os: "windows"
 };
 
-// Build UI after sources load
+// ======================================================
+// INIT UI
+// ======================================================
 async function initExtrasUI() {
   SOURCES = await loadSources();
 
@@ -83,9 +84,9 @@ async function initExtrasUI() {
   updateSeparateDownloadButton();
 }
 
-// ---------------------------
-// Build Homebrew Extras
-// ---------------------------
+// ======================================================
+// BUILD HOMEBREW LIST
+// ======================================================
 function buildHomebrewList() {
   const container = document.getElementById("extras-homebrew");
   container.innerHTML = "";
@@ -97,9 +98,9 @@ function buildHomebrewList() {
   });
 }
 
-// ---------------------------
-// Build PC Tools (OS‑aware)
-// ---------------------------
+// ======================================================
+// BUILD PC LIST (OS‑AWARE)
+// ======================================================
 function buildPCList() {
   const container = document.getElementById("extras-pc");
   container.innerHTML = "";
@@ -113,9 +114,9 @@ function buildPCList() {
   });
 }
 
-// ---------------------------
+// ======================================================
 // OS DROPDOWN
-// ---------------------------
+// ======================================================
 function initOSDropdown() {
   const dropdown = document.getElementById("os-dropdown");
 
@@ -127,9 +128,9 @@ function initOSDropdown() {
   });
 }
 
-// ---------------------------
-// Create Extra Item UI
-// ---------------------------
+// ======================================================
+// CREATE EXTRA ITEM (MERGE / SEPARATE / OFF)
+// ======================================================
 function createExtraItem(item, category) {
   const div = document.createElement("div");
   div.className = "extra-item";
@@ -158,7 +159,6 @@ function createExtraItem(item, category) {
     }
 
     btn.addEventListener("click", () => {
-      // Clicking active → OFF
       if (current === mode.key) {
         current = null;
         delete selectedExtras[category][item.filename];
@@ -170,7 +170,6 @@ function createExtraItem(item, category) {
         return;
       }
 
-      // Activate this mode
       current = mode.key;
       selectedExtras[category][item.filename] = mode.key;
 
@@ -189,9 +188,9 @@ function createExtraItem(item, category) {
   return div;
 }
 
-// ---------------------------
-// Show/hide "Download Extras" button
-// ---------------------------
+// ======================================================
+// SHOW/HIDE SEPARATE DOWNLOAD BUTTON
+// ======================================================
 function updateSeparateDownloadButton() {
   const btn = document.getElementById("separate-download-btn");
 
@@ -202,9 +201,9 @@ function updateSeparateDownloadButton() {
   btn.style.display = hasSeparate ? "block" : "none";
 }
 
-// ---------------------------
-// Helper: find extra by filename
-// ---------------------------
+// ======================================================
+// FIND EXTRA BY FILENAME (GLOBAL!)
+// ======================================================
 function findExtraByFilename(name) {
   const hb = SOURCES.extras.homebrew?.find(x => x.filename === name);
   if (hb) return hb;
@@ -216,7 +215,7 @@ function findExtraByFilename(name) {
 }
 
 // ======================================================
-// MAIN ZIP BUILDER (MAIN BUNDLE)
+// MAIN AIO ZIP BUILDER
 // ======================================================
 async function buildBundle() {
   const { bundleName, sources } = await loadSources();
@@ -290,7 +289,7 @@ async function buildBundle() {
 }
 
 // ======================================================
-// SEPARATE EXTRAS AIO BUILDER
+// SEPARATE EXTRAS ZIP BUILDER
 // ======================================================
 async function buildExtrasBundle() {
   const { extrasName } = await loadSources();
@@ -298,7 +297,6 @@ async function buildExtrasBundle() {
 
   let extrasZip = new JSZip();
 
-  // Loop through extras marked as "separate"
   for (const [cat, items] of Object.entries(selectedExtras)) {
     if (cat === "os") continue;
 
