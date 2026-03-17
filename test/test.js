@@ -1,6 +1,6 @@
-// ---------------------------
+// ======================================================
 // LOAD SOURCES FROM JSON
-// ---------------------------
+// ======================================================
 async function loadSources() {
   try {
     const res = await fetch("./sources.json");
@@ -8,23 +8,24 @@ async function loadSources() {
 
     return {
       bundleName: json.bundleName,
-      sources: json.sources || []
+      sources: json.sources || [],
+      extras: json.extras || {}
     };
 
   } catch (err) {
     console.error("Failed to load sources.json:", err);
 
-    // Only fallback if the file truly failed to load
     return {
       bundleName: "Modding-Bundle",
-      sources: []
+      sources: [],
+      extras: {}
     };
   }
 }
 
-// ---------------------------
+// ======================================================
 // LOAD FILTERS FROM JSON
-// ---------------------------
+// ======================================================
 async function loadFilters() {
   try {
     const res = await fetch("./filter.json");
@@ -35,17 +36,17 @@ async function loadFilters() {
   }
 }
 
-// ---------------------------
+// ======================================================
 // LOGGING
-// ---------------------------
+// ======================================================
 function log(msg) {
   const box = document.getElementById("log");
   box.textContent += msg + "\n";
 }
 
-// ---------------------------
+// ======================================================
 // DIRECT DOWNLOAD
-// ---------------------------
+// ======================================================
 async function downloadDirect(url) {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Failed to download: ${url} (${res.status})`);
@@ -56,14 +57,131 @@ function getDownloadUrl(source) {
   if (source.type === "proxy") {
     return `https://proxy.caver1k.net/?url=${encodeURIComponent(source.url)}`;
   }
-
-  // Default: direct download
   return source.url;
 }
 
+// ======================================================
+// EXTRAS SYSTEM
+// ======================================================
+
+let SOURCES = null;
+let selectedExtras = {
+  homebrew: {},
+  pc: {},
+  os: "windows"
+};
+
+// Build UI after sources load
+async function initExtrasUI() {
+  SOURCES = await loadSources();
+
+  buildHomebrewList();
+  buildOSSelector();
+  buildPCList();
+}
+
 // ---------------------------
+// Build Homebrew Extras
+// ---------------------------
+function buildHomebrewList() {
+  const container = document.getElementById("extras-homebrew");
+  container.innerHTML = "";
+
+  if (!SOURCES.extras.homebrew) return;
+
+  SOURCES.extras.homebrew.forEach(item => {
+    container.appendChild(createExtraItem(item, "homebrew"));
+  });
+}
+
+// ---------------------------
+// Build PC Tools (OS‑aware)
+// ---------------------------
+function buildPCList() {
+  const container = document.getElementById("extras-pc");
+  container.innerHTML = "";
+
+  if (!SOURCES.extras.pc) return;
+
+  const tools = SOURCES.extras.pc.filter(tool => tool[selectedExtras.os]);
+
+  tools.forEach(tool => {
+    container.appendChild(createExtraItem(tool, "pc"));
+  });
+}
+
+// ---------------------------
+// OS Selector
+// ---------------------------
+function buildOSSelector() {
+  const osSel = document.getElementById("os-selector");
+  osSel.innerHTML = "";
+
+  ["windows", "linux", "mac"].forEach(os => {
+    const btn = document.createElement("div");
+    btn.className = "toggle" + (os === selectedExtras.os ? " active" : "");
+    btn.textContent = os.toUpperCase();
+    btn.dataset.os = os;
+
+    btn.addEventListener("click", () => {
+      selectedExtras.os = os;
+
+      document.querySelectorAll("#os-selector .toggle")
+        .forEach(b => b.classList.remove("active"));
+
+      btn.classList.add("active");
+
+      buildPCList();
+    });
+
+    osSel.appendChild(btn);
+  });
+}
+
+// ---------------------------
+// Create Extra Item UI
+// ---------------------------
+function createExtraItem(item, category) {
+  const div = document.createElement("div");
+  div.className = "extra-item";
+
+  div.innerHTML = `
+    <strong>${item.filename}</strong>
+    <div class="toggle" data-id="${item.filename}" data-cat="${category}">
+      Merge with main bundle
+    </div>
+  `;
+
+  div.querySelector(".toggle").addEventListener("click", toggleExtra);
+
+  return div;
+}
+
+// ---------------------------
+// Toggle Extra (merge / separate / off)
+// ---------------------------
+function toggleExtra(e) {
+  const el = e.target;
+  const id = el.dataset.id;
+  const cat = el.dataset.cat;
+
+  if (!selectedExtras[cat][id]) {
+    selectedExtras[cat][id] = "merge";
+    el.classList.add("active");
+    el.textContent = "Download separately";
+  } else if (selectedExtras[cat][id] === "merge") {
+    selectedExtras[cat][id] = "separate";
+    el.textContent = "Remove";
+  } else {
+    delete selectedExtras[cat][id];
+    el.classList.remove("active");
+    el.textContent = "Merge with main bundle";
+  }
+}
+
+// ======================================================
 // MAIN ZIP BUILDER
-// ---------------------------
+// ======================================================
 async function buildBundle() {
   const { bundleName, sources } = await loadSources();
   const filters = await loadFilters();
@@ -75,6 +193,9 @@ async function buildBundle() {
 
   let finalZip = new JSZip();
 
+  // ---------------------------
+  // MAIN SOURCES
+  // ---------------------------
   for (const src of sources) {
     log(`Downloading ${src.filename}...`);
     let data = await downloadDirect(getDownloadUrl(src));
@@ -82,36 +203,49 @@ async function buildBundle() {
     let zipContent = await JSZip.loadAsync(data);
     data = null;
 
-    // Extract ALL files exactly as they appear
     for (const [path, file] of Object.entries(zipContent.files)) {
       if (file.dir) continue;
 
-      // -----------------------------
-      // FILTER: folders (remove entire directories)
-      // -----------------------------
-      if (filters.folders.some(folder => path.startsWith(folder + "/"))) {
-        continue;
-      }
+      if (filters.folders.some(folder => path.startsWith(folder + "/"))) continue;
+      if (filters.files.includes(path)) continue;
 
-      // -----------------------------
-      // FILTER: files (root or anywhere)
-      // -----------------------------
-      if (filters.files.includes(path)) {
-        continue;
-      }
-
-      // If not filtered, include it
       const fileData = await file.async("arraybuffer");
       finalZip.file(path, fileData);
     }
-
-    zipContent = null;
   }
 
+  // ---------------------------
+  // MERGED EXTRAS
+  // ---------------------------
+  for (const [cat, items] of Object.entries(selectedExtras)) {
+    if (cat === "os") continue;
+
+    for (const [filename, mode] of Object.entries(items)) {
+      if (mode !== "merge") continue;
+
+      const item = findExtraByFilename(filename);
+      if (!item) continue;
+
+      const url = item[selectedExtras.os] || item.url;
+      log(`Merging extra: ${filename}`);
+
+      const data = await downloadDirect(url);
+      const zipContent = await JSZip.loadAsync(data);
+
+      for (const [path, file] of Object.entries(zipContent.files)) {
+        if (!file.dir) {
+          const fileData = await file.async("arraybuffer");
+          finalZip.file(path, fileData);
+        }
+      }
+    }
+  }
+
+  // ---------------------------
+  // FINAL ZIP
+  // ---------------------------
   log("Generating final ZIP...");
   const blob = await finalZip.generateAsync({ type: "blob" });
-
-  finalZip = null;
 
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -120,22 +254,37 @@ async function buildBundle() {
   document.body.appendChild(a);
   a.click();
   a.remove();
-
   URL.revokeObjectURL(url);
 
   log("ZIP file ready.");
 }
 
-// ---------------------------
+// Helper: find extra by filename
+function findExtraByFilename(name) {
+  const hb = SOURCES.extras.homebrew?.find(x => x.filename === name);
+  if (hb) return hb;
+
+  const pc = SOURCES.extras.pc?.find(x => x.filename === name);
+  if (pc) return pc;
+
+  return null;
+}
+
+// ======================================================
 // BUTTON HANDLER
-// ---------------------------
+// ======================================================
 document.getElementById("download-btn").addEventListener("click", () => {
   document.getElementById("log").textContent = "";
   buildBundle().catch(err => {
     log("ERROR: " + err.message);
     console.error(err);
   });
+});
+
+// Back button
 document.getElementById("back-btn").addEventListener("click", () => {
-window.location.href = "/";
+  window.location.href = "/";
 });
-});
+
+// Initialize extras UI
+initExtrasUI();
