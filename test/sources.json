@@ -71,7 +71,7 @@
       {
         "type": "proxy",
         "filename": "guiformat",
-        "windows": "http://ridgecrop.co.uk/guiformat.exe"
+        "windows": "https://ridgecrop.co.uk/guiformat.exe"
       }
     ]
   }
