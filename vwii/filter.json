@@ -5,6 +5,7 @@
   "files": [
     "info.json",
     "LICENSE",
+    "README",
     "manifest.install"
   ]
 }
