@@ -80,9 +80,9 @@
         "mac": "https://twbm.caver1k.net/download/mac/latest"
       },
       {
-        "type": "proxy",
+        "type": "direct",
         "filename": "guiformat",
-        "windows": "https://ridgecrop.co.uk/guiformat.exe"
+        "windows": "https://content.caver1k.net/Scott/guiformat.exe"
       }
     ]
   }
