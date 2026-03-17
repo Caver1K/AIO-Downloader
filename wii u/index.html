@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wii U Modding ZIP</title>
+  <title>Wii U Modding AIO</title>
 
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 
@@ -12,9 +12,44 @@
       font-family: Arial, sans-serif;
       background: #0d1117;
       color: #c9d1d9;
-      text-align: center;
       padding: 40px;
+      display: flex;
+      gap: 40px;
     }
+
+    #main {
+      flex: 1;
+      text-align: center;
+    }
+
+    #extras-panel {
+      width: 320px;
+      background: #161b22;
+      padding: 20px;
+      border-radius: 10px;
+      height: fit-content;
+    }
+
+    .extra-item {
+      background: #1f242d;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+
+    .toggle {
+      margin-top: 8px;
+      background: #30363d;
+      padding: 6px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .toggle.active {
+      background: #238636;
+    }
+
     button {
       background: #238636;
       color: white;
@@ -24,9 +59,7 @@
       border-radius: 8px;
       cursor: pointer;
     }
-    button:hover {
-      background: #2ea043;
-    }
+
     #log {
       margin-top: 30px;
       text-align: left;
@@ -39,11 +72,11 @@
       font-family: monospace;
       white-space: pre-wrap;
     }
+
     #back-btn {
       position: absolute;
       top: 20px;
       left: 20px;
-
       background: #1b1b1b;
       color: #eee;
       border: none;
@@ -53,25 +86,76 @@
       cursor: pointer;
       transition: 0.2s;
     }
-    #back-btn:hover {
-      background: #272727;
+    .extra-select-group {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .extra-select-btn {
+      flex: 1;
+      background: #30363d;
+      padding: 6px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      user-select: none;
+     }
+
+    .extra-select-btn.active {
+      background: #238636;
+    }
+    #os-dropdown {
+      background: #1f242d;
+      color: #c9d1d9;
+      border: 1px solid #30363d;
+      padding: 6px 10px;
+      border-radius: 6px;
     }
   </style>
 </head>
+
 <body>
   <button id="back-btn">← Back</button>
+
   <script>
     document.getElementById("back-btn").addEventListener("click", () => {
-    window.location.href = "/";
-  });
+      window.location.href = "/";
+    });
   </script>
 
-  <h1>Wii U Modding AIO download</h1></h1>
-  <p>Click the button to download all latest tools and have them as one ZIP, just like in FunkyScott47's latest guide.</p>
+  <div id="main">
+    <h1>Wii U Modding AIO download</h1>
+    <p>Click the button to download all latest tools and have them as one ZIP.<br>You can also add extras to the bundle or download the extras as 1 bundle.<br>"Merge" will add it to the AIO download and "Seperate" will add it to the extras bundle which you can then download.</p>
 
-  <button id="download-btn"> Download ZIP</button>
+    <button id="download-btn">Download ZIP</button>
 
-  <div id="log"></div>
+    <div id="log"></div>
+  </div>
+
+  <div id="extras-panel">
+    <h2>Extras</h2>
+
+    <h3>Homebrew</h3>
+    <div id="extras-homebrew"></div>
+
+<div style="display: flex; justify-content: space-between; align-items: center;">
+  <h3>PC Tools</h3>
+
+  <select id="os-dropdown">
+    <option value="windows">Windows</option>
+    <option value="linux">Linux</option>
+    <option value="mac">Mac</option>
+  </select>
+</div>
+
+<div id="extras-pc"></div>
+
+<!-- Appears only when needed -->
+<button id="separate-download-btn" style="display:none; margin-top:10px;">
+  Download Selected Apps
+</button>
+  </div>
 
   <script src="/aio.js"></script>
 </body>
