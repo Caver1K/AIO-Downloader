@@ -142,8 +142,8 @@ function createExtraItem(item, category) {
   group.className = "extra-select-group";
 
   const modes = [
-    { key: "merge", label: "MERGE" },
-    { key: "separate", label: "SEPARATE" }
+    { key: "merge", label: "Merge" },
+    { key: "separate", label: "Seperate" }
   ];
 
   let current = selectedExtras[category][item.filename] || null;
