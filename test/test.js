@@ -145,15 +145,46 @@ function createExtraItem(item, category) {
   const div = document.createElement("div");
   div.className = "extra-item";
 
-  div.innerHTML = `
-    <strong>${item.filename}</strong>
-    <div class="toggle" data-id="${item.filename}" data-cat="${category}">
-      Merge with main bundle
-    </div>
-  `;
+  const title = document.createElement("strong");
+  title.textContent = item.filename;
+  div.appendChild(title);
 
-  div.querySelector(".toggle").addEventListener("click", toggleExtra);
+  const group = document.createElement("div");
+  group.className = "extra-select-group";
 
+  const modes = [
+    { key: "off", label: "OFF" },
+    { key: "merge", label: "MERGE" },
+    { key: "separate", label: "SEPARATE" }
+  ];
+
+  // Default state
+  if (!selectedExtras[category][item.filename]) {
+    selectedExtras[category][item.filename] = "off";
+  }
+
+  modes.forEach(mode => {
+    const btn = document.createElement("div");
+    btn.className = "extra-select-btn";
+    btn.textContent = mode.label;
+
+    if (selectedExtras[category][item.filename] === mode.key) {
+      btn.classList.add("active");
+    }
+
+    btn.addEventListener("click", () => {
+      selectedExtras[category][item.filename] = mode.key;
+
+      group.querySelectorAll(".extra-select-btn")
+        .forEach(b => b.classList.remove("active"));
+
+      btn.classList.add("active");
+    });
+
+    group.appendChild(btn);
+  });
+
+  div.appendChild(group);
   return div;
 }
 
