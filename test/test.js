@@ -76,6 +76,19 @@ async function tryLoadZipOrReturnRaw(arrayBuffer) {
 }
 
 // ======================================================
+// FIX: DETERMINE FINAL FILENAME WITH EXTENSION
+// ======================================================
+function getFinalFilename(filename, rawUrl) {
+  if (filename.includes(".")) return filename;
+
+  const parts = rawUrl.split(".");
+  if (parts.length < 2) return filename;
+
+  const ext = parts.pop().split(/#|\?/)[0];
+  return `${filename}.${ext}`;
+}
+
+// ======================================================
 // GLOBAL STATE
 // ======================================================
 let SOURCES = null;
@@ -249,7 +262,8 @@ async function buildBundle() {
     const parsed = await tryLoadZipOrReturnRaw(data);
 
     if (!parsed.isZip) {
-      finalZip.file(src.filename, parsed.raw);
+      const finalName = getFinalFilename(src.filename, getDownloadUrl(src));
+      finalZip.file(finalName, parsed.raw);
       continue;
     }
 
@@ -285,7 +299,8 @@ async function buildBundle() {
       const parsed = await tryLoadZipOrReturnRaw(data);
 
       if (!parsed.isZip) {
-        finalZip.file(filename, parsed.raw);
+        const finalName = getFinalFilename(filename, rawUrl);
+        finalZip.file(finalName, parsed.raw);
         continue;
       }
 
@@ -343,7 +358,8 @@ async function buildExtrasBundle() {
       const parsed = await tryLoadZipOrReturnRaw(data);
 
       if (!parsed.isZip) {
-        extrasZip.file(filename, parsed.raw);
+        const finalName = getFinalFilename(filename, rawUrl);
+        extrasZip.file(finalName, parsed.raw);
         continue;
       }
 
@@ -386,10 +402,13 @@ document.getElementById("download-btn").addEventListener("click", () => {
   });
 });
 
-document.getElementById("separate-download-btn").addEventListener("click", () => {
-  buildExtrasBundle().catch(err => {
-    console.error(err);
-  });
+// FIX: Prevent double-download by resetting listeners
+const extrasBtn = document.getElementById("separate-download-btn");
+extrasBtn.replaceWith(extrasBtn.cloneNode(true));
+const newExtrasBtn = document.getElementById("separate-download-btn");
+
+newExtrasBtn.addEventListener("click", () => {
+  buildExtrasBundle().catch(err => console.error(err));
 });
 
 // Back button
