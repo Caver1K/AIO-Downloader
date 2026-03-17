@@ -57,10 +57,22 @@ async function downloadDirect(url) {
 
 function getDownloadUrl(source) {
   if (source.type === "proxy") {
-  const osUrl = source[selectedExtras.os] || source.url;
-  return `https://proxy.caver1k.net/?url=${encodeURIComponent(osUrl)}`;
+    const osUrl = source[selectedExtras.os] || source.url;
+    return `https://proxy.caver1k.net/?url=${encodeURIComponent(osUrl)}`;
   }
   return source.url;
+}
+
+// ======================================================
+// ZIP OR RAW FILE DETECTOR
+// ======================================================
+async function tryLoadZipOrReturnRaw(arrayBuffer) {
+  try {
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    return { isZip: true, zip };
+  } catch {
+    return { isZip: false, raw: arrayBuffer };
+  }
 }
 
 // ======================================================
@@ -203,7 +215,7 @@ function updateSeparateDownloadButton() {
 }
 
 // ======================================================
-// FIND EXTRA BY FILENAME (GLOBAL!)
+// FIND EXTRA BY FILENAME
 // ======================================================
 function findExtraByFilename(name) {
   const hb = SOURCES.extras.homebrew?.find(x => x.filename === name);
@@ -234,8 +246,14 @@ async function buildBundle() {
     log(`Downloading ${src.filename}...`);
     let data = await downloadDirect(getDownloadUrl(src));
 
-    let zipContent = await JSZip.loadAsync(data);
-    data = null;
+    const parsed = await tryLoadZipOrReturnRaw(data);
+
+    if (!parsed.isZip) {
+      finalZip.file(src.filename, parsed.raw);
+      continue;
+    }
+
+    const zipContent = parsed.zip;
 
     for (const [path, file] of Object.entries(zipContent.files)) {
       if (file.dir) continue;
@@ -258,11 +276,20 @@ async function buildBundle() {
       const item = findExtraByFilename(filename);
       if (!item) continue;
 
-      const url = item[selectedExtras.os] || item.url;
-      log(`Merging extra: ${filename}`);
+      const rawUrl = item[selectedExtras.os] || item.url;
+      const url = item.type === "proxy"
+        ? `https://proxy.caver1k.net/?url=${encodeURIComponent(rawUrl)}`
+        : rawUrl;
 
       const data = await downloadDirect(url);
-      const zipContent = await JSZip.loadAsync(data);
+      const parsed = await tryLoadZipOrReturnRaw(data);
+
+      if (!parsed.isZip) {
+        finalZip.file(filename, parsed.raw);
+        continue;
+      }
+
+      const zipContent = parsed.zip;
 
       for (const [path, file] of Object.entries(zipContent.files)) {
         if (!file.dir) {
@@ -307,14 +334,20 @@ async function buildExtrasBundle() {
       const item = findExtraByFilename(filename);
       if (!item) continue;
 
-    const rawUrl = item[selectedExtras.os] || item.url;
-    const url = item.type === "proxy"
-      ? `https://proxy.caver1k.net/?url=${encodeURIComponent(rawUrl)}`
-      : rawUrl;
-
+      const rawUrl = item[selectedExtras.os] || item.url;
+      const url = item.type === "proxy"
+        ? `https://proxy.caver1k.net/?url=${encodeURIComponent(rawUrl)}`
+        : rawUrl;
 
       const data = await downloadDirect(url);
-      const zipContent = await JSZip.loadAsync(data);
+      const parsed = await tryLoadZipOrReturnRaw(data);
+
+      if (!parsed.isZip) {
+        extrasZip.file(filename, parsed.raw);
+        continue;
+      }
+
+      const zipContent = parsed.zip;
 
       for (const [path, file] of Object.entries(zipContent.files)) {
         if (file.dir) continue;
