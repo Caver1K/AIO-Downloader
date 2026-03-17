@@ -1,5 +1,6 @@
 {
   "bundleName": "Wii U Modding Bundle",
+  "extrasName": "Wii U Extras Bundle",
   "sources": [
     {
       "type": "proxy",
@@ -31,5 +32,28 @@
       "url": "https://wiiu.cdn.fortheusers.org/zips/wup_installer_gx2_wuhb.zip",
       "filename": "WUP Installer GX2"
     }
-  ]
+  ],
+    "extras": {
+    "homebrew": [
+      {
+        "type": "direct",
+        "filename": "",
+        "url": ""
+      },
+      {
+        "type": "direct",
+        "filename": "",
+        "url": ""
+      }
+    ],
+    "pc": [
+      {
+        "type": "direct",
+        "filename": "",
+        "windows": "",
+        "linux": "",
+        "mac": ""
+      }
+    ]
+  }
 }
