@@ -44,6 +44,11 @@
     },
     {
       "type": "direct",
+      "url": "https://wiiu.cdn.fortheusers.org/zips/evWii.zip",
+      "filename": "evWii"
+    },
+    {
+      "type": "direct",
       "url": "https://hbb1.oscwii.org/api/contents/LoadPriiloader/LoadPriiloader.zip",
       "filename": "Load Priiloader"
     }
@@ -52,13 +57,18 @@
     "homebrew": [
       {
         "type": "direct",
-        "filename": "Save Mii WUT Port/Process MOD",
-        "url": "https://wiiu.cdn.fortheusers.org/zips/SaveMiiProcessMod.zip"
+        "filename": "SaveGame Manager GX",
+        "url": "https://hbb1.oscwii.org/api/contents/SaveGame_Manager_GX/SaveGame_Manager_GX.zip"
       },
       {
         "type": "direct",
-        "filename": "Wii U Account Swap",
-        "url": "https://wiiu.cdn.fortheusers.org/zips/Wii-U-Account-Swap.zip"
+        "filename": "SysCheck ModMii Edition",
+        "url": "https://hbb1.oscwii.org/api/contents/SysCheckME/SysCheckME.zip"
+      },
+      {
+        "type": "direct",
+        "filename": "WiiXploer SS",
+        "url": "https://hbb1.oscwii.org/api/contents/wiixplorer-ss/wiixplorer-ss.zip"
       }
     ],
     "pc": [
