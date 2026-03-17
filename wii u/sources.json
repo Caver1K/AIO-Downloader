@@ -26,24 +26,44 @@
       "type": "direct",
       "url": "https://wiiu.cdn.fortheusers.org/zips/appstore.zip",
       "filename": "HB-Appstore"
-    },
-    {
-      "type": "direct",
-      "url": "https://wiiu.cdn.fortheusers.org/zips/wup_installer_gx2_wuhb.zip",
-      "filename": "WUP Installer GX2"
     }
   ],
     "extras": {
     "homebrew": [
       {
         "type": "direct",
-        "filename": "",
-        "url": ""
+        "url": "https://wiiu.cdn.fortheusers.org/zips/wup_installer_gx2_wuhb.zip",
+        "filename": "WUP Installer GX2"
       },
       {
         "type": "direct",
-        "filename": "",
-        "url": ""
+        "filename": "Wii U Account Swap",
+        "url": "https://wiiu.cdn.fortheusers.org/zips/Wii-U-Account-Swap.zip"
+      },
+      {
+        "type": "direct",
+        "filename": "Wii U Ident",
+        "url": "https://wiiu.cdn.fortheusers.org/zips/WiiUIdent.zip"
+      },
+      {
+        "type": "direct",
+        "filename": "Save Mii Process Mod",
+        "url": "https://wiiu.cdn.fortheusers.org/zips/SaveMiiProcessMod.zip"
+      },
+      {
+        "type": "direct",
+        "filename": "UTheme",
+        "url": "https://wiiu.cdn.fortheusers.org/zips/UTheme.zip"
+      },
+      {
+        "type": "direct",
+        "filename": "Wii U Screenshot Manager",
+        "url": "https://wiiu.cdn.fortheusers.org/zips/WiiUScreenshotManager.zip"
+      },
+      {
+        "type": "direct",
+        "filename": "WUDD",
+        "url": "https://wiiu.cdn.fortheusers.org/zips/wudd.zip"
       }
     ],
     "pc": [
