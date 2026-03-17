@@ -70,7 +70,7 @@
     {
       "type": "direct",
       "filename": "guiformat",
-      "windows": "http://ridgecrop.co.uk/guiformat.exe",
+      "windows": "http://ridgecrop.co.uk/guiformat.exe"
     }
   ]
 }
