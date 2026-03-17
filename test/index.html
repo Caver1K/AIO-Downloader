@@ -155,13 +155,6 @@
 <button id="separate-download-btn" style="display:none; margin-top:10px;">
   Download Selected Apps
 </button>
-<script>
-  document.getElementById("separate-download-btn").addEventListener("click", () => {
-  buildExtrasBundle().catch(err => {
-    console.error(err);
-  });
-});
-</script>
   </div>
 
   <script src="test.js"></script>
