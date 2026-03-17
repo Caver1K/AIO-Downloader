@@ -57,7 +57,8 @@ async function downloadDirect(url) {
 
 function getDownloadUrl(source) {
   if (source.type === "proxy") {
-    return `https://proxy.caver1k.net/?url=${encodeURIComponent(source.url)}`;
+  const osUrl = source[selectedExtras.os] || source.url;
+  return `https://proxy.caver1k.net/?url=${encodeURIComponent(osUrl)}`;
   }
   return source.url;
 }
@@ -306,7 +307,11 @@ async function buildExtrasBundle() {
       const item = findExtraByFilename(filename);
       if (!item) continue;
 
-      const url = item[selectedExtras.os] || item.url;
+    const rawUrl = item[selectedExtras.os] || item.url;
+    const url = item.type === "proxy"
+      ? `https://proxy.caver1k.net/?url=${encodeURIComponent(rawUrl)}`
+      : rawUrl;
+
 
       const data = await downloadDirect(url);
       const zipContent = await JSZip.loadAsync(data);
