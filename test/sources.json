@@ -1,5 +1,6 @@
 {
   "bundleName": "vWii test Modding Bundle",
+  "extrasName": "vWii test Extras Bundle"
   "sources": [
     {
       "type": "direct",
