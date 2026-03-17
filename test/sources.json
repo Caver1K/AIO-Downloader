@@ -59,7 +59,8 @@
       "filename": "Wii U Account Swap",
       "url": "https://wiiu.cdn.fortheusers.org/zips/Wii-U-Account-Swap.zip"
 		}
-	},
+	]
+  },
     "pc": [
 		{
 		"type": "direct",
