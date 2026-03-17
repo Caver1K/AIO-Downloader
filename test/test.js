@@ -290,7 +290,7 @@ async function buildBundle() {
       const item = findExtraByFilename(filename);
       if (!item) continue;
 
-      log(`Downloading ${filename}...`);
+      log(`Extras: Downloading ${filename}...`);
 
       const rawUrl = item[selectedExtras.os] || item.url;
       const url = item.type === "proxy"
