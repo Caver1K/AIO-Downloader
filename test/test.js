@@ -188,28 +188,6 @@ function createExtraItem(item, category) {
   return div;
 }
 
-// ---------------------------
-// Toggle Extra (merge / separate / off)
-// ---------------------------
-function toggleExtra(e) {
-  const el = e.target;
-  const id = el.dataset.id;
-  const cat = el.dataset.cat;
-
-  if (!selectedExtras[cat][id]) {
-    selectedExtras[cat][id] = "merge";
-    el.classList.add("active");
-    el.textContent = "Download separately";
-  } else if (selectedExtras[cat][id] === "merge") {
-    selectedExtras[cat][id] = "separate";
-    el.textContent = "Remove";
-  } else {
-    delete selectedExtras[cat][id];
-    el.classList.remove("active");
-    el.textContent = "Merge with main bundle";
-  }
-}
-
 // ======================================================
 // MAIN ZIP BUILDER
 // ======================================================
