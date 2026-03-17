@@ -1,6 +1,6 @@
-// ---------------------------
+// ======================================================
 // LOAD SOURCES FROM JSON
-// ---------------------------
+// ======================================================
 async function loadSources() {
   try {
     const res = await fetch("./sources.json");
@@ -8,23 +8,26 @@ async function loadSources() {
 
     return {
       bundleName: json.bundleName,
-      sources: json.sources || []
+      extrasName: json.extrasName || "Extras",
+      sources: json.sources || [],
+      extras: json.extras || {}
     };
 
   } catch (err) {
     console.error("Failed to load sources.json:", err);
 
-    // Only fallback if the file truly failed to load
     return {
       bundleName: "Modding-Bundle",
-      sources: []
+      extrasName: "Extras",
+      sources: [],
+      extras: {}
     };
   }
 }
 
-// ---------------------------
+// ======================================================
 // LOAD FILTERS FROM JSON
-// ---------------------------
+// ======================================================
 async function loadFilters() {
   try {
     const res = await fetch("./filter.json");
@@ -35,17 +38,17 @@ async function loadFilters() {
   }
 }
 
-// ---------------------------
+// ======================================================
 // LOGGING
-// ---------------------------
+// ======================================================
 function log(msg) {
   const box = document.getElementById("log");
   box.textContent += msg + "\n";
 }
 
-// ---------------------------
+// ======================================================
 // DIRECT DOWNLOAD
-// ---------------------------
+// ======================================================
 async function downloadDirect(url) {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Failed to download: ${url} (${res.status})`);
@@ -54,16 +57,192 @@ async function downloadDirect(url) {
 
 function getDownloadUrl(source) {
   if (source.type === "proxy") {
-    return `https://proxy.caver1k.net/?url=${encodeURIComponent(source.url)}`;
+    const osUrl = source[selectedExtras.os] || source.url;
+    return `https://proxy.caver1k.net/?url=${encodeURIComponent(osUrl)}`;
   }
-
-  // Default: direct download
   return source.url;
 }
 
-// ---------------------------
-// MAIN ZIP BUILDER
-// ---------------------------
+// ======================================================
+// ZIP OR RAW FILE DETECTOR
+// ======================================================
+async function tryLoadZipOrReturnRaw(arrayBuffer) {
+  try {
+    const zip = await JSZip.loadAsync(arrayBuffer);
+    return { isZip: true, zip };
+  } catch {
+    return { isZip: false, raw: arrayBuffer };
+  }
+}
+
+// ======================================================
+// FIX: DETERMINE FINAL FILENAME WITH EXTENSION
+// ======================================================
+function getFinalFilename(filename, rawUrl) {
+  if (filename.includes(".")) return filename;
+
+  const parts = rawUrl.split(".");
+  if (parts.length < 2) return filename;
+
+  const ext = parts.pop().split(/#|\?/)[0];
+  return `${filename}.${ext}`;
+}
+
+// ======================================================
+// GLOBAL STATE
+// ======================================================
+let SOURCES = null;
+let selectedExtras = {
+  homebrew: {},
+  pc: {},
+  os: "windows"
+};
+
+// ======================================================
+// INIT UI
+// ======================================================
+async function initExtrasUI() {
+  SOURCES = await loadSources();
+
+  initOSDropdown();
+  buildHomebrewList();
+  buildPCList();
+  updateSeparateDownloadButton();
+}
+
+// ======================================================
+// BUILD HOMEBREW LIST
+// ======================================================
+function buildHomebrewList() {
+  const container = document.getElementById("extras-homebrew");
+  container.innerHTML = "";
+
+  if (!SOURCES.extras.homebrew) return;
+
+  SOURCES.extras.homebrew.forEach(item => {
+    container.appendChild(createExtraItem(item, "homebrew"));
+  });
+}
+
+// ======================================================
+// BUILD PC LIST (OS‑AWARE)
+// ======================================================
+function buildPCList() {
+  const container = document.getElementById("extras-pc");
+  container.innerHTML = "";
+
+  if (!SOURCES.extras.pc) return;
+
+  const tools = SOURCES.extras.pc.filter(tool => tool[selectedExtras.os]);
+
+  tools.forEach(tool => {
+    container.appendChild(createExtraItem(tool, "pc"));
+  });
+}
+
+// ======================================================
+// OS DROPDOWN
+// ======================================================
+function initOSDropdown() {
+  const dropdown = document.getElementById("os-dropdown");
+
+  dropdown.value = selectedExtras.os;
+
+  dropdown.addEventListener("change", () => {
+    selectedExtras.os = dropdown.value;
+    buildPCList();
+  });
+}
+
+// ======================================================
+// CREATE EXTRA ITEM (MERGE / SEPARATE / OFF)
+// ======================================================
+function createExtraItem(item, category) {
+  const div = document.createElement("div");
+  div.className = "extra-item";
+
+  const title = document.createElement("strong");
+  title.textContent = item.filename;
+  div.appendChild(title);
+
+  const group = document.createElement("div");
+  group.className = "extra-select-group";
+
+  const modes = [
+    { key: "merge", label: "Merge" },
+    { key: "separate", label: "Separate" }
+  ];
+
+  let current = selectedExtras[category][item.filename] || null;
+
+  modes.forEach(mode => {
+    const btn = document.createElement("div");
+    btn.className = "extra-select-btn";
+    btn.textContent = mode.label;
+
+    if (current === mode.key) {
+      btn.classList.add("active");
+    }
+
+    btn.addEventListener("click", () => {
+      if (current === mode.key) {
+        current = null;
+        delete selectedExtras[category][item.filename];
+
+        group.querySelectorAll(".extra-select-btn")
+          .forEach(b => b.classList.remove("active"));
+
+        updateSeparateDownloadButton();
+        return;
+      }
+
+      current = mode.key;
+      selectedExtras[category][item.filename] = mode.key;
+
+      group.querySelectorAll(".extra-select-btn")
+        .forEach(b => b.classList.remove("active"));
+
+      btn.classList.add("active");
+
+      updateSeparateDownloadButton();
+    });
+
+    group.appendChild(btn);
+  });
+
+  div.appendChild(group);
+  return div;
+}
+
+// ======================================================
+// SHOW/HIDE SEPARATE DOWNLOAD BUTTON
+// ======================================================
+function updateSeparateDownloadButton() {
+  const btn = document.getElementById("separate-download-btn");
+
+  const hasSeparate =
+    Object.values(selectedExtras.homebrew).includes("separate") ||
+    Object.values(selectedExtras.pc).includes("separate");
+
+  btn.style.display = hasSeparate ? "block" : "none";
+}
+
+// ======================================================
+// FIND EXTRA BY FILENAME
+// ======================================================
+function findExtraByFilename(name) {
+  const hb = SOURCES.extras.homebrew?.find(x => x.filename === name);
+  if (hb) return hb;
+
+  const pc = SOURCES.extras.pc?.find(x => x.filename === name);
+  if (pc) return pc;
+
+  return null;
+}
+
+// ======================================================
+// MAIN AIO ZIP BUILDER
+// ======================================================
 async function buildBundle() {
   const { bundleName, sources } = await loadSources();
   const filters = await loadFilters();
@@ -75,43 +254,72 @@ async function buildBundle() {
 
   let finalZip = new JSZip();
 
+  // MAIN SOURCES
   for (const src of sources) {
     log(`Downloading ${src.filename}...`);
     let data = await downloadDirect(getDownloadUrl(src));
 
-    let zipContent = await JSZip.loadAsync(data);
-    data = null;
+    const parsed = await tryLoadZipOrReturnRaw(data);
 
-    // Extract ALL files exactly as they appear
+    if (!parsed.isZip) {
+      const finalName = getFinalFilename(src.filename, src.url);
+      finalZip.file(finalName, parsed.raw);
+      continue;
+    }
+
+    const zipContent = parsed.zip;
+
     for (const [path, file] of Object.entries(zipContent.files)) {
       if (file.dir) continue;
 
-      // -----------------------------
-      // FILTER: folders (remove entire directories)
-      // -----------------------------
-      if (filters.folders.some(folder => path.startsWith(folder + "/"))) {
-        continue;
-      }
+      if (filters.folders.some(folder => path.startsWith(folder + "/"))) continue;
+      if (filters.files.includes(path)) continue;
 
-      // -----------------------------
-      // FILTER: files (root or anywhere)
-      // -----------------------------
-      if (filters.files.includes(path)) {
-        continue;
-      }
-
-      // If not filtered, include it
       const fileData = await file.async("arraybuffer");
       finalZip.file(path, fileData);
     }
-
-    zipContent = null;
   }
 
+  // MERGED EXTRAS
+  for (const [cat, items] of Object.entries(selectedExtras)) {
+    if (cat === "os") continue;
+
+    for (const [filename, mode] of Object.entries(items)) {
+      if (mode !== "merge") continue;
+
+      const item = findExtraByFilename(filename);
+      if (!item) continue;
+
+      log(`Extras: Downloading ${filename}...`);
+
+      const rawUrl = item[selectedExtras.os] || item.url;
+      const url = item.type === "proxy"
+        ? `https://proxy.caver1k.net/?url=${encodeURIComponent(rawUrl)}`
+        : rawUrl;
+
+      const data = await downloadDirect(url);
+      const parsed = await tryLoadZipOrReturnRaw(data);
+
+      if (!parsed.isZip) {
+        const finalName = getFinalFilename(filename, rawUrl);
+        finalZip.file(finalName, parsed.raw);
+        continue;
+      }
+
+      const zipContent = parsed.zip;
+
+      for (const [path, file] of Object.entries(zipContent.files)) {
+        if (!file.dir) {
+          const fileData = await file.async("arraybuffer");
+          finalZip.file(path, fileData);
+        }
+      }
+    }
+  }
+
+  // FINAL ZIP
   log("Generating final ZIP...");
   const blob = await finalZip.generateAsync({ type: "blob" });
-
-  finalZip = null;
 
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -120,22 +328,95 @@ async function buildBundle() {
   document.body.appendChild(a);
   a.click();
   a.remove();
-
   URL.revokeObjectURL(url);
 
   log("ZIP file ready.");
 }
 
-// ---------------------------
-// BUTTON HANDLER
-// ---------------------------
+// ======================================================
+// SEPARATE EXTRAS ZIP BUILDER
+// ======================================================
+async function buildExtrasBundle() {
+  const { extrasName } = await loadSources();
+  const filters = await loadFilters();
+
+  let extrasZip = new JSZip();
+
+  for (const [cat, items] of Object.entries(selectedExtras)) {
+    if (cat === "os") continue;
+
+    for (const [filename, mode] of Object.entries(items)) {
+      if (mode !== "separate") continue;
+
+      const item = findExtraByFilename(filename);
+      if (!item) continue;
+
+      const rawUrl = item[selectedExtras.os] || item.url;
+      const url = item.type === "proxy"
+        ? `https://proxy.caver1k.net/?url=${encodeURIComponent(rawUrl)}`
+        : rawUrl;
+
+      const data = await downloadDirect(url);
+      const parsed = await tryLoadZipOrReturnRaw(data);
+
+      if (!parsed.isZip) {
+        const finalName = getFinalFilename(filename, rawUrl);
+        extrasZip.file(finalName, parsed.raw);
+        continue;
+      }
+
+      const zipContent = parsed.zip;
+
+      for (const [path, file] of Object.entries(zipContent.files)) {
+        if (file.dir) continue;
+
+        if (filters.folders.some(folder => path.startsWith(folder + "/"))) continue;
+        if (filters.files.includes(path)) continue;
+
+        const fileData = await file.async("arraybuffer");
+        extrasZip.file(path, fileData);
+      }
+    }
+  }
+
+  if (Object.keys(extrasZip.files).length === 0) return;
+
+  const blob = await extrasZip.generateAsync({ type: "blob" });
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${extrasName}.zip`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+// ======================================================
+// BUTTON HANDLERS
+// ======================================================
 document.getElementById("download-btn").addEventListener("click", () => {
   document.getElementById("log").textContent = "";
   buildBundle().catch(err => {
     log("ERROR: " + err.message);
     console.error(err);
   });
+});
+
+// FIX: Prevent double-download by resetting listeners
+const extrasBtn = document.getElementById("separate-download-btn");
+extrasBtn.replaceWith(extrasBtn.cloneNode(true));
+const newExtrasBtn = document.getElementById("separate-download-btn");
+
+newExtrasBtn.addEventListener("click", () => {
+  buildExtrasBundle().catch(err => console.error(err));
+});
+
+// Back button
 document.getElementById("back-btn").addEventListener("click", () => {
-window.location.href = "/";
+  window.location.href = "/";
 });
-});
+
+// Initialize extras UI
+initExtrasUI();
