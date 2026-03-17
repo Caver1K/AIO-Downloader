@@ -129,9 +129,26 @@
     .aio-footer {
       margin-top: auto;
     }
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    .page-wrap {
+      min-height: calc(100% - 60px); /* footer height */
+    }
+
+    .aio-footer {
+      height: 60px;
+      text-align: center;
+      padding-top: 20px;
+      opacity: 0.7;
+      font-size: 14px;
+    }
   </style>
 </head>
 
+<div class="page-wrap">
 <body>
   <button id="back-btn">← Back</button>
 
@@ -175,9 +192,10 @@
   </div>
 
   <script src="test.js"></script>
-  <footer class="aio-footer">
+</body>
+</div>
+<footer class="aio-footer">
   This has been made using AI. If you would like to view the source code of this project,
   see the <a href="https://github.com/Caver1K/AIO-Downloader/" target="_blank">GitHub repository</a>.
 </footer>
-</body>
 </html>
