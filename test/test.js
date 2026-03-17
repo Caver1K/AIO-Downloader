@@ -143,7 +143,7 @@ function createExtraItem(item, category) {
 
   const modes = [
     { key: "merge", label: "Merge" },
-    { key: "separate", label: "Seperate" }
+    { key: "separate", label: "Separate" }
   ];
 
   let current = selectedExtras[category][item.filename] || null;
@@ -158,6 +158,7 @@ function createExtraItem(item, category) {
     }
 
     btn.addEventListener("click", () => {
+      // Clicking active → OFF
       if (current === mode.key) {
         current = null;
         delete selectedExtras[category][item.filename];
@@ -169,6 +170,7 @@ function createExtraItem(item, category) {
         return;
       }
 
+      // Activate this mode
       current = mode.key;
       selectedExtras[category][item.filename] = mode.key;
 
@@ -198,6 +200,19 @@ function updateSeparateDownloadButton() {
     Object.values(selectedExtras.pc).includes("separate");
 
   btn.style.display = hasSeparate ? "block" : "none";
+}
+
+// ---------------------------
+// Helper: find extra by filename
+// ---------------------------
+function findExtraByFilename(name) {
+  const hb = SOURCES.extras.homebrew?.find(x => x.filename === name);
+  if (hb) return hb;
+
+  const pc = SOURCES.extras.pc?.find(x => x.filename === name);
+  if (pc) return pc;
+
+  return null;
 }
 
 // ======================================================
@@ -283,7 +298,7 @@ async function buildExtrasBundle() {
 
   let extrasZip = new JSZip();
 
-  // Collect all extras marked as "separate"
+  // Loop through extras marked as "separate"
   for (const [cat, items] of Object.entries(selectedExtras)) {
     if (cat === "os") continue;
 
@@ -295,7 +310,6 @@ async function buildExtrasBundle() {
 
       const url = item[selectedExtras.os] || item.url;
 
-      // Download and merge like main AIO
       const data = await downloadDirect(url);
       const zipContent = await JSZip.loadAsync(data);
 
@@ -311,9 +325,7 @@ async function buildExtrasBundle() {
     }
   }
 
-  // If nothing was selected, do nothing
-  const hasFiles = Object.keys(extrasZip.files).length > 0;
-  if (!hasFiles) return;
+  if (Object.keys(extrasZip.files).length === 0) return;
 
   const blob = await extrasZip.generateAsync({ type: "blob" });
 
@@ -327,19 +339,19 @@ async function buildExtrasBundle() {
   URL.revokeObjectURL(url);
 }
 
-// Button: "Download extras"
-document.getElementById("separate-download-btn").addEventListener("click", () => {
-  buildExtrasBundle().catch(err => {
-    console.error(err);
-  });
-});
 // ======================================================
-// BUTTON HANDLER
+// BUTTON HANDLERS
 // ======================================================
 document.getElementById("download-btn").addEventListener("click", () => {
   document.getElementById("log").textContent = "";
   buildBundle().catch(err => {
     log("ERROR: " + err.message);
+    console.error(err);
+  });
+});
+
+document.getElementById("separate-download-btn").addEventListener("click", () => {
+  buildExtrasBundle().catch(err => {
     console.error(err);
   });
 });
