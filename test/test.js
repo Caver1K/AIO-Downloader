@@ -153,26 +153,36 @@ function createExtraItem(item, category) {
   group.className = "extra-select-group";
 
   const modes = [
-    { key: "off", label: "OFF" },
     { key: "merge", label: "MERGE" },
     { key: "separate", label: "SEPARATE" }
   ];
 
-  // Default state
-  if (!selectedExtras[category][item.filename]) {
-    selectedExtras[category][item.filename] = "off";
-  }
+  // Determine current state (undefined = OFF)
+  let current = selectedExtras[category][item.filename] || null;
 
   modes.forEach(mode => {
     const btn = document.createElement("div");
     btn.className = "extra-select-btn";
     btn.textContent = mode.label;
 
-    if (selectedExtras[category][item.filename] === mode.key) {
+    if (current === mode.key) {
       btn.classList.add("active");
     }
 
     btn.addEventListener("click", () => {
+      // If clicking the already active button → turn OFF
+      if (current === mode.key) {
+        current = null;
+        delete selectedExtras[category][item.filename];
+
+        group.querySelectorAll(".extra-select-btn")
+          .forEach(b => b.classList.remove("active"));
+
+        return;
+      }
+
+      // Otherwise activate this mode
+      current = mode.key;
       selectedExtras[category][item.filename] = mode.key;
 
       group.querySelectorAll(".extra-select-btn")
