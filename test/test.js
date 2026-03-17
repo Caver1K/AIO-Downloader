@@ -8,6 +8,7 @@ async function loadSources() {
 
     return {
       bundleName: json.bundleName,
+      extrasName: json.extrasName || "Extras",
       sources: json.sources || [],
       extras: json.extras || {}
     };
@@ -17,6 +18,7 @@ async function loadSources() {
 
     return {
       bundleName: "Modding-Bundle",
+      extrasName: "Extras",
       sources: [],
       extras: {}
     };
@@ -75,9 +77,10 @@ let selectedExtras = {
 async function initExtrasUI() {
   SOURCES = await loadSources();
 
+  initOSDropdown();
   buildHomebrewList();
-  buildOSSelector();
   buildPCList();
+  updateSeparateDownloadButton();
 }
 
 // ---------------------------
@@ -111,30 +114,16 @@ function buildPCList() {
 }
 
 // ---------------------------
-// OS Selector
+// OS DROPDOWN
 // ---------------------------
-function buildOSSelector() {
-  const osSel = document.getElementById("os-selector");
-  osSel.innerHTML = "";
+function initOSDropdown() {
+  const dropdown = document.getElementById("os-dropdown");
 
-  ["windows", "linux", "mac"].forEach(os => {
-    const btn = document.createElement("div");
-    btn.className = "toggle" + (os === selectedExtras.os ? " active" : "");
-    btn.textContent = os.toUpperCase();
-    btn.dataset.os = os;
+  dropdown.value = selectedExtras.os;
 
-    btn.addEventListener("click", () => {
-      selectedExtras.os = os;
-
-      document.querySelectorAll("#os-selector .toggle")
-        .forEach(b => b.classList.remove("active"));
-
-      btn.classList.add("active");
-
-      buildPCList();
-    });
-
-    osSel.appendChild(btn);
+  dropdown.addEventListener("change", () => {
+    selectedExtras.os = dropdown.value;
+    buildPCList();
   });
 }
 
@@ -157,7 +146,6 @@ function createExtraItem(item, category) {
     { key: "separate", label: "SEPARATE" }
   ];
 
-  // Determine current state (undefined = OFF)
   let current = selectedExtras[category][item.filename] || null;
 
   modes.forEach(mode => {
@@ -170,7 +158,6 @@ function createExtraItem(item, category) {
     }
 
     btn.addEventListener("click", () => {
-      // If clicking the already active button → turn OFF
       if (current === mode.key) {
         current = null;
         delete selectedExtras[category][item.filename];
@@ -178,10 +165,10 @@ function createExtraItem(item, category) {
         group.querySelectorAll(".extra-select-btn")
           .forEach(b => b.classList.remove("active"));
 
+        updateSeparateDownloadButton();
         return;
       }
 
-      // Otherwise activate this mode
       current = mode.key;
       selectedExtras[category][item.filename] = mode.key;
 
@@ -189,6 +176,8 @@ function createExtraItem(item, category) {
         .forEach(b => b.classList.remove("active"));
 
       btn.classList.add("active");
+
+      updateSeparateDownloadButton();
     });
 
     group.appendChild(btn);
@@ -198,8 +187,21 @@ function createExtraItem(item, category) {
   return div;
 }
 
+// ---------------------------
+// Show/hide "Download Extras" button
+// ---------------------------
+function updateSeparateDownloadButton() {
+  const btn = document.getElementById("separate-download-btn");
+
+  const hasSeparate =
+    Object.values(selectedExtras.homebrew).includes("separate") ||
+    Object.values(selectedExtras.pc).includes("separate");
+
+  btn.style.display = hasSeparate ? "block" : "none";
+}
+
 // ======================================================
-// MAIN ZIP BUILDER
+// MAIN ZIP BUILDER (MAIN BUNDLE)
 // ======================================================
 async function buildBundle() {
   const { bundleName, sources } = await loadSources();
@@ -212,9 +214,7 @@ async function buildBundle() {
 
   let finalZip = new JSZip();
 
-  // ---------------------------
   // MAIN SOURCES
-  // ---------------------------
   for (const src of sources) {
     log(`Downloading ${src.filename}...`);
     let data = await downloadDirect(getDownloadUrl(src));
@@ -233,9 +233,7 @@ async function buildBundle() {
     }
   }
 
-  // ---------------------------
   // MERGED EXTRAS
-  // ---------------------------
   for (const [cat, items] of Object.entries(selectedExtras)) {
     if (cat === "os") continue;
 
@@ -260,9 +258,7 @@ async function buildBundle() {
     }
   }
 
-  // ---------------------------
   // FINAL ZIP
-  // ---------------------------
   log("Generating final ZIP...");
   const blob = await finalZip.generateAsync({ type: "blob" });
 
@@ -277,6 +273,53 @@ async function buildBundle() {
 
   log("ZIP file ready.");
 }
+
+// ======================================================
+// SEPARATE EXTRAS ZIP BUILDER
+// ======================================================
+document.getElementById("separate-download-btn").addEventListener("click", async () => {
+  const { extrasName } = await loadSources();
+
+  let zip = new JSZip();
+
+  for (const [cat, items] of Object.entries(selectedExtras)) {
+    if (cat === "os") continue;
+
+    for (const [filename, mode] of Object.entries(items)) {
+      if (mode !== "separate") continue;
+
+      const item = findExtraByFilename(filename);
+      if (!item) continue;
+
+      const url = item[selectedExtras.os] || item.url;
+      log(`Adding separate extra: ${filename}`);
+
+      const data = await downloadDirect(url);
+      const zipContent = await JSZip.loadAsync(data);
+
+      for (const [path, file] of Object.entries(zipContent.files)) {
+        if (!file.dir) {
+          const fileData = await file.async("arraybuffer");
+          zip.file(path, fileData);
+        }
+      }
+    }
+  }
+
+  log("Generating extras ZIP...");
+  const blob = await zip.generateAsync({ type: "blob" });
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${extrasName}.zip`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+
+  log("Extras ZIP ready.");
+});
 
 // Helper: find extra by filename
 function findExtraByFilename(name) {
