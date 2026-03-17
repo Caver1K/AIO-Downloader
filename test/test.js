@@ -262,7 +262,7 @@ async function buildBundle() {
     const parsed = await tryLoadZipOrReturnRaw(data);
 
     if (!parsed.isZip) {
-      const finalName = getFinalFilename(src.filename, getDownloadUrl(src));
+      const finalName = getFinalFilename(src.filename, src.url);
       finalZip.file(finalName, parsed.raw);
       continue;
     }
@@ -289,6 +289,8 @@ async function buildBundle() {
 
       const item = findExtraByFilename(filename);
       if (!item) continue;
+
+      log(`Downloading ${filename}...`);
 
       const rawUrl = item[selectedExtras.os] || item.url;
       const url = item.type === "proxy"
