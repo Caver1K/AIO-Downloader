@@ -47,23 +47,68 @@
     "homebrew": [
       {
         "type": "direct",
-        "filename": "",
-        "url": ""
+        "filename": "CleanRip",
+        "url": "https://hbb1.oscwii.org/api/contents/CleanRip/CleanRip.zip"
       },
       {
         "type": "direct",
-        "filename": "",
-        "url": ""
+        "filename": "SaveGame Manager GX",
+        "url": "https://hbb1.oscwii.org/api/contents/SaveGame_Manager_GX/SaveGame_Manager_GX.zip"
+      },
+      {
+        "type": "direct",
+        "filename": "FTPii",
+        "url": "https://hbb1.oscwii.org/api/contents/FTPii/FTPii.zip"
+      },
+      {
+        "type": "direct",
+        "filename": "WiiLink Mail Patcher",
+        "url": "https://hbb1.oscwii.org/api/contents/Mail-Patcher/Mail-Patcher.zip"
+      },
+      {
+        "type": "direct",
+        "filename": "AnyGlobe Changer",
+        "url": "https://hbb1.oscwii.org/api/contents/AnyGlobe_Changer/AnyGlobe_Changer.zip"
+      },
+      {
+        "type": "direct",
+        "filename": "GameCube Memory Card Manager(GCMM)",
+        "url": "https://hbb1.oscwii.org/api/contents/gcmm/gcmm.zip"
+      },
+      {
+        "type": "direct",
+        "filename": "Riivolution",
+        "url": "https://hbb1.oscwii.org/api/contents/riivolution/riivolution.zip"
+      },
+      {
+        "type": "direct",
+        "filename": "SysCheck ModMii Edition",
+        "url": "https://hbb1.oscwii.org/api/contents/SysCheckME/SysCheckME.zip"
+      },
+      {
+        "type": "direct",
+        "filename": "WiiXploer SS",
+        "url": "https://hbb1.oscwii.org/api/contents/wiixplorer-ss/wiixplorer-ss.zip"
       }
     ],
     "pc": [
       {
+        "type": "proxy",
+        "filename": "Tiny Wii Backup Manager",
+        "windows": "https://twbm.caver1k.net/download/windows/latest",
+        "linux": "https://twbm.caver1k.net/download/linux/latest",
+        "mac": "https://twbm.caver1k.net/download/mac/latest"
+      },
+      {
         "type": "direct",
-        "filename": "",
-        "windows": "",
-        "linux": "",
-        "mac": ""
-      }
+        "filename": "guiformat",
+        "windows": "https://content.caver1k.net/Scott/guiformat.exe"
+      },
+      {
+        "type": "proxy",
+        "filename": "CleanRip ISO dump to RVZ(batch script)",
+        "windows": "https://github.com/Caver1K/Split-ISO2RVZ/releases/download/1.1.1/Split_ISO2RVZ-NKit.bat"
+      },
     ]
   }
 }
