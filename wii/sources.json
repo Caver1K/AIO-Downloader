@@ -108,7 +108,7 @@
         "type": "proxy",
         "filename": "CleanRip ISO dump to RVZ(batch script)",
         "windows": "https://github.com/Caver1K/Split-ISO2RVZ/releases/download/1.1.1/Split_ISO2RVZ-NKit.bat"
-      },
+      }
     ]
   }
 }
