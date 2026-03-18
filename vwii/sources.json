@@ -52,6 +52,11 @@
     "homebrew": [
       {
         "type": "direct",
+        "filename": "System Channel Restorer",
+        "url": "https://hbb1.oscwii.org/api/contents/system-channel-restorer/system-channel-restorer.zip"
+      },
+      {
+        "type": "direct",
         "filename": "SaveGame Manager GX",
         "url": "https://hbb1.oscwii.org/api/contents/SaveGame_Manager_GX/SaveGame_Manager_GX.zip"
       },
