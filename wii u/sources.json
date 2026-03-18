@@ -42,7 +42,7 @@
       },
       {
         "type": "direct",
-        "filename": "Wii U Ident",
+        "filename": "WiiUIdent",
         "url": "https://wiiu.cdn.fortheusers.org/zips/WiiUIdent.zip"
       },
       {
@@ -60,19 +60,59 @@
         "filename": "Wii U Screenshot Manager",
         "url": "https://wiiu.cdn.fortheusers.org/zips/WiiUScreenshotManager.zip"
       },
-      {
+            {
         "type": "direct",
         "filename": "WUDD",
         "url": "https://wiiu.cdn.fortheusers.org/zips/wudd.zip"
+      },
+      {
+        "type": "direct",
+        "filename": "Wii U Reboot",
+        "url": "https://wiiu.cdn.fortheusers.org/zips/WiiUReboot.zip"
+      },
+      {
+        "type": "direct",
+        "filename": "Plugin: Begone Wiimotes",
+        "url": "https://wiiu.cdn.fortheusers.org/zips/begone-wiimotes.zip"
+      },
+      {
+        "type": "direct",
+        "filename": "Plugin: GiveMii Youtube",
+        "url": "https://wiiu.cdn.fortheusers.org/zips/GiveMiiYouTube.zip"
+      },
+      {
+        "type": "direct",
+        "filename": "Plugin: StyleMiiU",
+        "url": "https://wiiu.cdn.fortheusers.org/zips/StyleMiiU.zip"
+      },
+      {
+        "type": "direct",
+        "filename": "Plugin: Close/Restart Game",
+        "url": "https://wiiu.cdn.fortheusers.org/zips/CloseRestartGame.zip"
       }
     ],
     "pc": [
       {
+        "type": "proxy",
+        "filename": "Wii U Downloader",
+        "windows": "https://wiiud.caver1k.net/download/windows/latest",
+        "mac": "https://wiiud.caver1k.net/download/mac/latest",
+        "linux": "https://wiiud.caver1k.net/download/linux/latest"
+      },
+      {
         "type": "direct",
-        "filename": "",
-        "windows": "",
-        "linux": "",
-        "mac": ""
+        "filename": "guiformat",
+        "windows": "https://content.caver1k.net/Scott/guiformat.exe"
+      },
+      {
+        "type": "proxy",
+        "filename": "UWUVCi",
+        "windows": "https://github.com/stuff-by-3-random-dudes/UWUVCI-AIO-WPF/releases/download/v3.100.1/UWUVCI_INSTALLER.exe"
+      },
+      {
+        "type": "proxy",
+        "filename": "Switch Toolbox(for creating custom themes)",
+        "windows": "https://github.com/KillzXGaming/Switch-Toolbox/releases/download/Final/Toolbox-Latest.zip"
       }
     ]
   }
