@@ -351,6 +351,8 @@ async function buildExtrasBundle() {
       const item = findExtraByFilename(filename);
       if (!item) continue;
 
+      log(`Extras ZIP: Downloading ${filename} seperatly...`);
+
       const rawUrl = item[selectedExtras.os] || item.url;
       const url = item.type === "proxy"
         ? `https://proxy.caver1k.net/?url=${encodeURIComponent(rawUrl)}`
