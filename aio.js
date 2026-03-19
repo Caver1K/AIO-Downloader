@@ -383,6 +383,7 @@ async function buildExtrasBundle() {
 
   if (Object.keys(extrasZip.files).length === 0) return;
 
+  log("Generating final Extras ZIP...");
   const blob = await extrasZip.generateAsync({ type: "blob" });
 
   const url = URL.createObjectURL(blob);
@@ -393,6 +394,8 @@ async function buildExtrasBundle() {
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
+
+  log("Extras ZIP ready.");
 }
 
 // ======================================================
